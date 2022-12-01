@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>Americasa.Demo</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Americasa.Demo.Domain\Americasa.Demo.Domain.csproj" />
+    <ProjectReference Include="..\Americasa.Demo.Application.Contracts\Americasa.Demo.Application.Contracts.csproj" />
+    <ProjectReference Include="..\Americasa.Demo.Entities\Americasa.Demo.Entities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.Account.Application" Version="6.0.1" />
+    <PackageReference Include="Volo.Abp.Identity.Application" Version="6.0.1" />
+    <PackageReference Include="Volo.Abp.PermissionManagement.Application" Version="6.0.1" />
+    <PackageReference Include="Volo.Abp.TenantManagement.Application" Version="6.0.1" />
+    <PackageReference Include="Volo.Abp.FeatureManagement.Application" Version="6.0.1" />
+    <PackageReference Include="Volo.Abp.SettingManagement.Application" Version="6.0.1" />
+  </ItemGroup>
+
+</Project>
