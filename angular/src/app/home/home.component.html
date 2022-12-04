@@ -23,21 +23,50 @@
         </div>
         <div class="col-md d-flex align-items-center">
           <div class="pe-0 pe-md-4">
-            <small class="text-uppercase text-muted">THE OFFICIAL GUIDE</small>
-            <h2 class="mb-4">Mastering ABP Framework</h2>
-            <p class="mb-4">Written by the creator of the ABP Framework, this book will help you gain a complete
-              understanding of the framework and modern web application development techniques.</p>
-            <div class="mb-4">
-              <a href="https://www.amazon.com/gp/product/B097Z2DM8Q/ref=dbs_a_def_rwt_hsch_vapi_tkin_p1_i0"
-                 class="btn btn-success mb-1">
-                Buy on Amazon US
-              </a>
-              &nbsp;
-              <a href="https://www.packtpub.com/product/mastering-abp-framework/9781801079242"
-                 class="btn btn-primary mb-1">
-                Buy on PACKT
-              </a>
-            </div>
+            <mat-card>
+              <mat-card-header class="w-100">
+                <mat-card-title-group class="w-100">
+                  <mat-card-title class="abp-card-title"
+                    >{{ '::Menu:Books' | abpLocalization }}</mat-card-title
+                  >
+                </mat-card-title-group>
+              </mat-card-header>
+              <mat-card-content>
+                <table
+                  mat-table
+                  [dataSource]="book.items"
+                  class="w-100"
+                  matSort
+                  (matSortChange)="changeSort($event)"
+                >
+                  <tr mat-header-row *matHeaderRowDef="columns"></tr>
+                  <tr mat-row *matRowDef="let myRowData; columns: columns"></tr>
+                  <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                      {{'::Name' | abpLocalization}}
+                    </th>
+                    <td mat-cell *matCellDef="let element">{{element.name}}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="type">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                      {{'::Type' | abpLocalization}}
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ '::Enum:BookType:' + element.type | abpLocalization }}
+                    </td>
+                  </ng-container>
+                  <mat-text-column
+                    [headerText]="'::Price' | abpLocalization"
+                    name="price"
+                  ></mat-text-column>
+                </table>
+                <mat-paginator
+                  [length]="book.totalCount"
+                  [pageSize]="list.maxResultCount"
+                  (page)="changePage($event)"
+                ></mat-paginator>
+              </mat-card-content>
+            </mat-card>
           </div>
         </div>
       </div>
