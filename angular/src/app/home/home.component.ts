@@ -3,9 +3,9 @@ import { Component } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { ListService, PagedResultDto } from "@abp/ng.core";
 import { HouseDealDto } from '@proxy/entities/entities';
-import { HouseDealsService } from '@proxy/';
 import { PageEvent } from "@angular/material/paginator";
 import { Sort } from "@angular/material/sort";
+import { HouseDealsService } from '@proxy/house-deals.service';
 
 @Component({
   selector: 'app-home',
@@ -15,17 +15,17 @@ import { Sort } from "@angular/material/sort";
 })
 export class HomeComponent {
   deals = { items: [], totalCount: 0 } as PagedResultDto<HouseDealDto>;
-  columns: string[] = ["Customer Name", "Phone Number", "Email", "DealerShip", "Lot #", "Home Name", "Box Size", "Wind Zone", "Attachments", "Home Status", "Lot Status", "Actions"];
+  columns: string[] = ["Customer", "Phone", "Email", "DealerShip", "Lot", "HName", "BSize", "WZone", "Attachments", "HStatus", "LotStatus", "Actions"];
 
   get hasLoggedIn(): boolean {
     return this.oAuthService.hasValidAccessToken();
   }
 
   constructor(private oAuthService: OAuthService,
-    private authService: AuthService, 
-    public readonly list: ListService, 
+    private authService: AuthService,
+    public readonly list: ListService,
     private houseDealService: HouseDealsService) {
-      this.list.maxResultCount = 2;
+    this.list.maxResultCount = 2;
   }
 
   ngOnInit() {
@@ -35,6 +35,23 @@ export class HomeComponent {
       this.deals = response;
     });
   }
+
+  editBook(id: string) {
+    /* this.houseDealService.get(id).subscribe((book) => {
+        const dialogRef = this.dialog.open(BookDialogComponent, {
+            data: book
+        });
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.bookService.update(id, result).subscribe(() => {
+                    this.list.get();
+                });
+            }
+        });
+    }); */
+  }
+
+  deleteBook(id: string) {} 
 
   changePage(pageEvent: PageEvent) {
     this.list.page = pageEvent.pageIndex;
