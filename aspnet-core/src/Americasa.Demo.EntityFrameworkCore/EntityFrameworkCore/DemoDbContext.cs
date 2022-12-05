@@ -56,6 +56,7 @@ public class DemoDbContext :
     public DbSet<House> Houses { get; set; }
     public DbSet<HouseStatus> HouseStatuses { get; set; }
     public DbSet<LotStatus> LotStatuses { get; set; }
+    public DbSet<HouseDeal> HouseDeals { get; set; }
 
     #endregion
 
@@ -98,6 +99,11 @@ public class DemoDbContext :
         builder.Entity<LotStatus>(b =>
         {
             b.ToTable(DemoConsts.DbTablePrefix + "LotStatuses", DemoConsts.DbSchema);
+        });
+
+        builder.Entity<HouseDeal>(b =>
+        {
+            b.ToTable(DemoConsts.DbTablePrefix + "HouseDeals", DemoConsts.DbSchema);
         });
     }
 }
