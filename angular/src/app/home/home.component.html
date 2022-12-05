@@ -104,7 +104,12 @@
               <ng-container matColumnDef="Actions">
                 <th mat-header-cell *matHeaderCellDef> Actions </th>
                 <td mat-cell *matCellDef="let element">
-                  Start
+                  <ul class="no-list-decoration">
+                    <li>Edit</li>
+                    <li>Customer Info</li>
+                    <li>Start Home Review</li>
+                    <li>Select Lot</li>
+                  </ul>
                 </td>
               </ng-container>
             </table>
@@ -141,5 +146,9 @@
     .border-start {
       border-left: 0 !important;
     }
+  }
+
+  .no-list-decoration {
+    list-style-type: none;
   }
 </style>
