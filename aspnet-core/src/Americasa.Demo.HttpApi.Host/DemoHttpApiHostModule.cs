@@ -33,6 +33,8 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Volo.Abp.AspNetCore.Mvc.AntiForgery;
 using Elsa.Persistence.EntityFramework.PostgreSql;
 using Elsa;
+using Autofac.Core;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Americasa.Demo;
 
@@ -77,6 +79,8 @@ public class DemoHttpApiHostModule : AbpModule
         ConfigureSwaggerServices(context, configuration);
         context.Services.AddApiVersioning();
         ConfigureElsa(context, configuration);
+        //Razor
+        context.Services.AddRazorPages();
     }
 
     private void ConfigureAuthentication(ServiceConfigurationContext context)
@@ -222,7 +226,7 @@ public class DemoHttpApiHostModule : AbpModule
                 .AddEmailActivities(elsaSection.GetSection("Smtp").Bind)
                 .AddQuartzTemporalActivities()
                 .AddJavaScriptActivities()
-                .AddWorkflowsFrom<DemoHttpApiHostModule>();
+                .AddWorkflowsFrom<Startup>();
         });
 
         context.Services.AddElsaApiEndpoints();
@@ -295,6 +299,13 @@ public class DemoHttpApiHostModule : AbpModule
 
         app.UseAuditing();
         app.UseAbpSerilogEnrichers();
+        app.UseHttpActivities();
         app.UseConfiguredEndpoints();
+
+        //other middlewares
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
     }
 }

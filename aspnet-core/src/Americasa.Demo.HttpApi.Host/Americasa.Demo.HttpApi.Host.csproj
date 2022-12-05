@@ -52,6 +52,12 @@
     <None Remove="Elsa.Designer.Components.Web" />
     <None Remove="Elsa.Activities.Email" />
     <None Remove="Elsa.Persistence.EntityFramework.PostgreSql" />
+    <None Remove="Elsa\" />
+    <None Remove="Elsa\Elsa\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\" />
+    <Folder Include="Views\Elsa\" />
+  </ItemGroup>
 </Project>
