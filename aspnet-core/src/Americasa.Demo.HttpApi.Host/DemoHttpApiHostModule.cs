@@ -28,6 +28,13 @@ using Volo.Abp.Modularity;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
+using Elsa.Persistence.EntityFramework.Core.Extensions;
+using Microsoft.AspNetCore.Mvc.Versioning;
+using Volo.Abp.AspNetCore.Mvc.AntiForgery;
+using Elsa.Persistence.EntityFramework.PostgreSql;
+using Elsa;
+using Autofac.Core;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Americasa.Demo;
 
@@ -70,6 +77,10 @@ public class DemoHttpApiHostModule : AbpModule
         ConfigureVirtualFileSystem(context);
         ConfigureCors(context, configuration);
         ConfigureSwaggerServices(context, configuration);
+        context.Services.AddApiVersioning();
+        ConfigureElsa(context, configuration);
+        //Razor
+        context.Services.AddRazorPages();
     }
 
     private void ConfigureAuthentication(ServiceConfigurationContext context)
@@ -200,6 +211,50 @@ public class DemoHttpApiHostModule : AbpModule
         });
     }
 
+    private void ConfigureElsa(ServiceConfigurationContext context, IConfiguration configuration)
+    {
+        var elsaSection = configuration.GetSection("Elsa");
+
+        context.Services.AddElsa(elsa =>
+        {
+            elsa
+                .UseEntityFrameworkPersistence(ef =>
+                    DbContextOptionsBuilderExtensions.UsePostgreSql(ef,
+                        configuration.GetConnectionString("Default")))
+                .AddConsoleActivities()
+                .AddHttpActivities(elsaSection.GetSection("Server").Bind)
+                .AddEmailActivities(elsaSection.GetSection("Smtp").Bind)
+                .AddQuartzTemporalActivities()
+                .AddJavaScriptActivities()
+                .AddWorkflowsFrom<Startup>();
+        });
+
+        context.Services.AddElsaApiEndpoints();
+        context.Services.Configure<ApiVersioningOptions>(options =>
+        {
+            options.UseApiBehavior = false;
+        });
+
+        context.Services.AddCors(cors => cors.AddDefaultPolicy(policy => policy
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowAnyOrigin()
+            .WithExposedHeaders("Content-Disposition"))
+        );
+
+        //Uncomment the below line if your abp version is lower than v4.4 to register controllers of Elsa .
+        //See https://github.com/abpframework/abp/pull/9299 (we will no longer need to specify this line of code from v4.4)
+        // context.Services.AddAssemblyOf<Elsa.Server.Api.Endpoints.WorkflowRegistry.Get>();
+
+        //Disable antiforgery validation for elsa
+        Configure<AbpAntiForgeryOptions>(options =>
+        {
+            options.AutoValidateFilter = type =>
+                type.Assembly != typeof(Elsa.Server.Api.Endpoints.WorkflowRegistry.Get).Assembly;
+        });
+    }
+
+
     public override void OnApplicationInitialization(ApplicationInitializationContext context)
     {
         var app = context.GetApplicationBuilder();
@@ -244,6 +299,13 @@ public class DemoHttpApiHostModule : AbpModule
 
         app.UseAuditing();
         app.UseAbpSerilogEnrichers();
+        app.UseHttpActivities();
         app.UseConfiguredEndpoints();
+
+        //other middlewares
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
     }
 }
