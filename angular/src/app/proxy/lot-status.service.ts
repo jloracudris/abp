@@ -1,5 +1,6 @@
 import type { LotStatusDto } from './entities/entities/models';
 import { RestService } from '@abp/ng.core';
+import type { PagedResultDto } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -27,7 +28,7 @@ export class LotStatusService {
   
 
   getList = () =>
-    this.restService.request<any, LotStatusDto[]>({
+    this.restService.request<any, PagedResultDto<LotStatusDto>>({
       method: 'GET',
       url: '/api/app/lot-status',
     },

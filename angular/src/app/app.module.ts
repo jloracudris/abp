@@ -34,6 +34,6 @@ import { APP_ROUTE_PROVIDER } from './route.provider';
   ],
   declarations: [AppComponent],
   providers: [APP_ROUTE_PROVIDER],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
 export class AppModule {}

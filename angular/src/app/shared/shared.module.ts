@@ -19,7 +19,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
-  declarations: [],
+  declarations: [ ],
   imports: [
     CoreModule,
     ThemeSharedModule,

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 
@@ -37,14 +38,21 @@ namespace Americasa.Demo
             await _houseStatusRepository.DeleteAsync(id);
         }
 
-        public async Task<List<HouseStatusDto>> GetListAsync()
+        public async Task<PagedResultDto<HouseStatusDto>> GetListAsync()
         {
             var items = await _houseStatusRepository.GetListAsync();
-            return items
+            var totalCount = await _houseStatusRepository.GetCountAsync();
+
+            var rs = items
                 .Select(item => new HouseStatusDto
                 {
                     Name = item.Name,
                 }).ToList();
+
+            return new PagedResultDto<HouseStatusDto>(
+                totalCount,
+                rs
+            );
         }
     }
 }

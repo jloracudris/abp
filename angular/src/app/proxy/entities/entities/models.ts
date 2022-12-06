@@ -1,6 +1,5 @@
-import { AuditedEntityDto } from "@abp/ng.core";
 
-export interface HouseDealDto extends AuditedEntityDto<string> {
+export interface HouseDealDto {
   dealId?: string;
   name?: string;
   phoneNumber?: string;
@@ -19,7 +18,7 @@ export interface HouseDealDto extends AuditedEntityDto<string> {
 export interface HouseDto {
   homeId?: string;
   name?: string;
-  houseStatusId: number;
+  homeStatusId: number;
   creationTime?: string;
   updateTime?: string;
 }

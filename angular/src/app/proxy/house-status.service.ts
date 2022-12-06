@@ -1,5 +1,6 @@
 import type { HouseStatusDto } from './entities/entities/models';
 import { RestService } from '@abp/ng.core';
+import type { PagedResultDto } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -27,7 +28,7 @@ export class HouseStatusService {
   
 
   getList = () =>
-    this.restService.request<any, HouseStatusDto[]>({
+    this.restService.request<any, PagedResultDto<HouseStatusDto>>({
       method: 'GET',
       url: '/api/app/house-status',
     },

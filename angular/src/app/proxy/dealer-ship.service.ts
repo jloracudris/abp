@@ -1,5 +1,6 @@
 import type { DealerShipDto } from './dto/models';
 import { RestService } from '@abp/ng.core';
+import type { PagedResultDto } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -27,7 +28,7 @@ export class DealerShipService {
   
 
   getList = () =>
-    this.restService.request<any, DealerShipDto[]>({
+    this.restService.request<any, PagedResultDto<DealerShipDto>>({
       method: 'GET',
       url: '/api/app/dealer-ship',
     },

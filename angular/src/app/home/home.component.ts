@@ -6,6 +6,8 @@ import { HouseDealDto } from '@proxy/entities/entities';
 import { PageEvent } from "@angular/material/paginator";
 import { Sort } from "@angular/material/sort";
 import { HouseDealsService } from '@proxy/house-deals.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DealDialogComponent } from './components/deal-dialog/deal-dialog.component';
 
 @Component({
   selector: 'app-home',
@@ -24,7 +26,8 @@ export class HomeComponent {
   constructor(private oAuthService: OAuthService,
     private authService: AuthService,
     public readonly list: ListService,
-    private houseDealService: HouseDealsService) {
+    private houseDealService: HouseDealsService,
+    public dialog: MatDialog) {
     this.list.maxResultCount = 2;
   }
 
@@ -33,6 +36,23 @@ export class HomeComponent {
 
     this.list.hookToQuery(dealstreamCreator).subscribe((response) => {
       this.deals = response;
+    });
+  }
+
+  createBook() {
+    const dialogRef = this.dialog.open(DealDialogComponent, {
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+      height: '100%',
+      width: '100%',
+      panelClass: 'full-screen-modal'
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.houseDealService.create(result).subscribe(() => {
+          this.list.get();
+        });
+      }
     });
   }
 

@@ -1,0 +1,76 @@
+<h2 mat-dialog-title>New Deal</h2>
+<mat-dialog-content>
+  <form [formGroup]="form" class="form-container">
+    <mat-form-field class="w-100">
+      <mat-label>{{'::Name' | abpLocalization}} <span> * </span></mat-label>
+      <input type="text" id="deal-customerName" matInput formControlName="customerName" />
+    </mat-form-field>
+
+    <mat-form-field class="w-100">
+      <mat-label>Phone Number <span> * </span></mat-label>
+      <input type="number" id="deal-phone" matInput formControlName="phone" />
+    </mat-form-field>
+
+    <mat-form-field class="w-100">
+      <mat-label>Email <span> * </span></mat-label>
+      <input type="text" id="deal-email" matInput formControlName="email" />
+    </mat-form-field>
+
+    <mat-form-field class="w-100">
+      <mat-label>dealerShip</mat-label>
+      <mat-select id="book-dealerShip" formControlName="dealerShip">
+        <mat-option [value]="dls.dealerShipId" *ngFor="let dls of dealership?.items">{{ dls.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="w-100">
+      <mat-label>Lot</mat-label>
+      <input type="text" id="deal-lot" matInput formControlName="lot" />
+    </mat-form-field>
+
+    <mat-form-field class="w-100">
+      <mat-label>House Name <span> * </span></mat-label>
+      <input type="text" id="deal-lot" matInput formControlName="lot" />
+    </mat-form-field>
+
+    <mat-form-field class="w-100">
+      <mat-label>House Name <span> * </span></mat-label>
+      <input type="text" id="deal-lot" matInput formControlName="lot" />
+    </mat-form-field>
+
+    <mat-form-field class="w-100">
+      <mat-label>Box Size</mat-label>
+      <input type="text" id="deal-boxSize" matInput formControlName="boxSize" />
+    </mat-form-field>
+
+    <mat-form-field class="w-100">
+      <mat-label>Wind Zone</mat-label>
+      <input type="text" id="deal-windZone" matInput formControlName="windZone" />
+    </mat-form-field>
+
+    <mat-form-field class="w-100">
+      <mat-label>Attachment</mat-label>
+      <input type="text" id="deal-attachment" matInput formControlName="attachment" />
+    </mat-form-field>
+
+    <mat-form-field class="w-100">
+      <mat-label>House Status</mat-label>
+      <mat-select id="book-houseStatus" formControlName="houseStatus">
+        <mat-option [value]="houseStatus.name" *ngFor="let houseStatus of houseStatus.items">{{ houseStatus.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="w-100">
+      <mat-label>Lot Status</mat-label>
+      <mat-select id="book-lotStatus" formControlName="lotStatus">
+        <mat-option [value]="lotStatus.name" *ngFor="let lotStatus of lotStatus.items">{{ lotStatus.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close>{{ '::Close' | abpLocalization }}</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="getFormValue()">
+    {{'::Save' | abpLocalization}}
+  </button>
+</mat-dialog-actions>

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 
@@ -38,15 +39,22 @@ namespace Americasa.Demo
             await _dealerShipRepository.DeleteAsync(id);
         }
 
-        public async Task<List<DealerShipDto>> GetListAsync()
+        public async Task<PagedResultDto<DealerShipDto>> GetListAsync()
         {
             var items = await _dealerShipRepository.GetListAsync();
-            return items
+            var totalCount = await _dealerShipRepository.GetCountAsync();
+
+            var rs = items
                 .Select(item => new DealerShipDto
                 {
                     DealerShipId = item.DealerShipId,
                     Name = item.Name
                 }).ToList();
+
+            return new PagedResultDto<DealerShipDto>(
+                totalCount,
+                rs
+            );
         }
     }
 }
