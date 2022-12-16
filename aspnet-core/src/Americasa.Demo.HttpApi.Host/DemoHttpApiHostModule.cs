@@ -35,6 +35,7 @@ using Elsa.Persistence.EntityFramework.PostgreSql;
 using Elsa;
 using Autofac.Core;
 using Microsoft.EntityFrameworkCore.Internal;
+using Americasa.Demo.Provider.WorkflowContexts;
 
 namespace Americasa.Demo;
 
@@ -68,6 +69,10 @@ public class DemoHttpApiHostModule : AbpModule
     {
         var configuration = context.Services.GetConfiguration();
         var hostingEnvironment = context.Services.GetHostingEnvironment();
+
+        context.Services.AddDbContextFactory<DemoDbContext>(options =>
+            options.UsePostgreSql(configuration["ConnectionStrings:Default"]),
+            ServiceLifetime.Scoped);
 
         ConfigureAuthentication(context);
         ConfigureBundles();
@@ -228,7 +233,7 @@ public class DemoHttpApiHostModule : AbpModule
                 .AddJavaScriptActivities()
                 .AddWorkflowsFrom<Startup>();
         });
-
+        context.Services.AddWorkflowContextProvider<HouseDealWorkflowContextProvider>();
         context.Services.AddElsaApiEndpoints();
         context.Services.Configure<ApiVersioningOptions>(options =>
         {
