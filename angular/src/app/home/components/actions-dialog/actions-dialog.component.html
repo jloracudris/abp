@@ -1,0 +1,16 @@
+<h2 mat-dialog-title>New Deal</h2>
+<mat-dialog-content>
+  <form [formGroup]="form" (ngSubmit)="save()">
+
+    <div class="form-group" *ngFor="let field of listSchema">
+      <label for="schema-{{field.title}}">{{field.title}}</label><span> * </span>
+      <input type="text" id="schema-{{field.title}}" class="form-control" [formControlName]="field.title" />
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close>{{ '::Close' | abpLocalization }}</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="getFormValue()">
+    {{'::Save' | abpLocalization}}
+  </button>
+</mat-dialog-actions>
