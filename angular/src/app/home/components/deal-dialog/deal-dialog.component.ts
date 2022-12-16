@@ -79,7 +79,7 @@ export class DealDialogComponent implements OnInit {
     });
   }
 
-  getFormValue() {
+  getFormValue() {    
     return this.form.value;
   }
 }

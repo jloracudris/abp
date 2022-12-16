@@ -8,31 +8,39 @@ import { Injectable } from '@angular/core';
 })
 export class HouseDealsService {
   apiName = 'Default';
-  
 
-  create = (text: string) =>
+
+  create = (name: string, attachment: string , boxsize: string , email: string , houseName: string, lotNumber: string , phone: string , windZone: string ) =>
     this.restService.request<any, HouseDealDto>({
       method: 'POST',
       url: '/api/app/house-deals',
-      params: { text },
+      params: { name,  attachment, boxsize, email, houseName, lotNumber, phone, windZone},
     },
-    { apiName: this.apiName });
-  
+      { apiName: this.apiName });
+
 
   delete = (id: string) =>
     this.restService.request<any, void>({
       method: 'DELETE',
       url: `/api/app/house-deals/${id}`,
     },
-    { apiName: this.apiName });
-  
+      { apiName: this.apiName });
+
+
+  GetSchemaActivity = (apiVersion: string = "1.0") =>
+    this.restService.request<any, any>({
+      method: 'GET',
+      url: `/start-home-review/start`,
+    },
+      { apiName: this.apiName });
+
 
   getList = () =>
     this.restService.request<any, PagedResultDto<HouseDealDto>>({
       method: 'GET',
       url: '/api/app/house-deals',
     },
-    { apiName: this.apiName });
+      { apiName: this.apiName });
 
-  constructor(private restService: RestService) {}
+  constructor(private restService: RestService) { }
 }

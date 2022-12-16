@@ -21,22 +21,37 @@ namespace Americasa.Demo
             _houseDealsRepository = houseDealsRepository;
         }
 
-        public async Task<HouseDealDto> CreateAsync(string text)
+        public async Task<HouseDealDto> CreateAsync(string name, string attachment, string boxsize, string email, string houseName, string lotNumber, string phone, string windZone)
         {
             var deal = await _houseDealsRepository.InsertAsync(
-                new HouseDeal { Name = text }
+                new HouseDeal
+                {
+                    Name = name,
+                    Attachment = attachment,
+                    BoxSize = boxsize,
+                    CreationTime = DateTime.Now,
+                    DealId = Guid.NewGuid(),
+                    Email = email,
+                    HomeStatusId = Guid.NewGuid(),
+                    HouseName = houseName,
+                    LotNumber = lotNumber,
+                    LotStatusId = Guid.NewGuid(),
+                    PhoneNumber = phone,
+                    WindZone = windZone,
+                    UpdateTime = DateTime.Now,
+                }
             );
 
             return new HouseDealDto
-            {   
+            {
                 Name = deal.Name,
                 Attachment = deal.Attachment,
                 BoxSize = deal.BoxSize,
                 CreationTime = DateTime.Now,
                 DealId = deal.DealId,
                 Email = deal.Email,
-                HomeStatusId = deal.HomeStatusId,                
-                HouseName = deal.HouseName,                
+                HomeStatusId = deal.HomeStatusId,
+                HouseName = deal.HouseName,
                 LotNumber = deal.LotNumber,
                 LotStatusId = deal.LotStatusId,
                 PhoneNumber = deal.PhoneNumber,

@@ -8,6 +8,7 @@ import { Sort } from "@angular/material/sort";
 import { HouseDealsService } from '@proxy/house-deals.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DealDialogComponent } from './components/deal-dialog/deal-dialog.component';
+import { ActionsDialogComponent } from './components/actions-dialog/actions-dialog.component';
 
 @Component({
   selector: 'app-home',
@@ -22,6 +23,7 @@ export class HomeComponent {
   get hasLoggedIn(): boolean {
     return this.oAuthService.hasValidAccessToken();
   }
+  
 
   constructor(private oAuthService: OAuthService,
     private authService: AuthService,
@@ -49,10 +51,21 @@ export class HomeComponent {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.houseDealService.create(result).subscribe(() => {
+        const { customerName, attachment, boxSize, email, houseName, lot, phone, windZone} = result;
+        this.houseDealService.create(customerName, attachment, boxSize, email, houseName, lot, phone, windZone).subscribe(() => {
           this.list.get();
         });
       }
+    });
+  }
+
+  triggerAction() {
+    this.dialog.open(ActionsDialogComponent, {
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+      height: '100%',
+      width: '100%',
+      panelClass: 'full-screen-modal'
     });
   }
 
