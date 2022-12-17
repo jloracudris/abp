@@ -58,7 +58,7 @@ namespace Americasa.Demo.Migrations
                     b.Property<Guid>("HomeId")
                         .HasColumnType("uuid");
 
-                    b.Property<int>("HouseStatusId")
+                    b.Property<int>("HomeStatusId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
@@ -102,6 +102,9 @@ namespace Americasa.Demo.Migrations
                     b.Property<string>("HouseName")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsPublished")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("LotNumber")
                         .IsRequired()

@@ -9,6 +9,7 @@ namespace Americasa.Demo.Entities.Entities
 {
     public class HouseDealDto
     {
+        public string InstanceId { get; set; } = default!;
         public Guid DealId { get; set; }
         public string Name { get; set; }
         public string PhoneNumber { get; set; }
@@ -22,5 +23,7 @@ namespace Americasa.Demo.Entities.Entities
         public Guid LotStatusId { get; set; }
         public DateTime CreationTime { get; set; }
         public DateTime UpdateTime { get; set; }
+
+        public bool IsPublished { get; set; }
     }
 }
