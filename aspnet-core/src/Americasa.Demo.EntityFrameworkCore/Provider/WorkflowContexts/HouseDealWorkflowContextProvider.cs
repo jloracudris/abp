@@ -9,16 +9,20 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Volo.Abp.Domain.Repositories;
 
 namespace Americasa.Demo.Provider.WorkflowContexts
 {
     public class HouseDealWorkflowContextProvider : Elsa.Services.WorkflowContextRefresher<HouseDeal>
     {
-        private readonly IDbContextFactory<DemoDbContext> _demoDbContext;
+        //private readonly IDbContextFactory<DemoDbContext> _demoDbContext;
+        private readonly IRepository<HouseDeal, Guid> _houseDealsRepository;
 
-        public HouseDealWorkflowContextProvider(IDbContextFactory<DemoDbContext> demoDbContext)
+        public HouseDealWorkflowContextProvider(
+            //IDbContextFactory<DemoDbContext> demoDbContext,
+            IRepository<HouseDeal, Guid> houseDealsRepository)
         {
-            _demoDbContext = demoDbContext;
+            _houseDealsRepository = houseDealsRepository;
         }
 
         /// <summary>
@@ -26,9 +30,18 @@ namespace Americasa.Demo.Provider.WorkflowContexts
         /// </summary>
         public override async ValueTask<HouseDeal?> LoadAsync(LoadWorkflowContext context, CancellationToken cancellationToken = default)
         {
-            var houseDealId = context.ContextId;
-            await using var dbContext = _demoDbContext.CreateDbContext();
-            return await dbContext.HouseDeals.AsQueryable().FirstOrDefaultAsync(x => x.InstanceId == houseDealId, cancellationToken);
+            try
+            {
+                var houseDealId = context.ContextId;
+                //await using var dbContext = _demoDbContext.CreateDbContext();
+                //var deals = await _houseDealsRepository.FirstOrDefaultAsync;
+                return await _houseDealsRepository.FirstOrDefaultAsync(x => x.InstanceId == houseDealId, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
         }
 
         /// <summary>
@@ -40,8 +53,8 @@ namespace Americasa.Demo.Provider.WorkflowContexts
         public override async ValueTask<string?> SaveAsync(SaveWorkflowContext<HouseDeal> context, CancellationToken cancellationToken = default)
         {
             var houseDeal = context.Context;
-            await using var dbContext = _demoDbContext.CreateDbContext();
-            var dbSet = dbContext.HouseDeals;
+            // await using var dbContext = _demoDbContext.CreateDbContext();
+            //var dbSet = dbContext.HouseDeals;
 
             if (houseDeal == null)
             {
@@ -59,17 +72,20 @@ namespace Americasa.Demo.Provider.WorkflowContexts
                 context.WorkflowExecutionContext.ContextId = houseDeal.InstanceId;
 
                 // Add blog post to DB.
-                await dbSet.AddAsync(houseDeal, cancellationToken);
+                // await dbSet.AddAsync(houseDeal, cancellationToken);
+                await _houseDealsRepository.InsertAsync(houseDeal, true, cancellationToken);
             }
             else
             {
                 var houseDealId = houseDeal.InstanceId;
-                var existingHouseDealId = await dbSet.AsQueryable().Where(x => x.InstanceId == houseDealId).FirstAsync(cancellationToken);
+                var existingHouseDealId = await _houseDealsRepository.FirstOrDefaultAsync(x => x.InstanceId == houseDealId, cancellationToken); //await dbSet.AsQueryable().Where(x => x.InstanceId == houseDealId).FirstAsync(cancellationToken);
+                await _houseDealsRepository.UpdateAsync(existingHouseDealId, true);
+                //_houseDealsRepository.UpdateAsync
+                //dbContext.Entry(existingHouseDealId).CurrentValues.SetValues(houseDeal);
 
-                dbContext.Entry(existingHouseDealId).CurrentValues.SetValues(houseDeal);
             }
 
-            await dbContext.SaveChangesAsync(cancellationToken);
+            // await dbContext.SaveChangesAsync(cancellationToken);
             return houseDeal.InstanceId;
         }
     }

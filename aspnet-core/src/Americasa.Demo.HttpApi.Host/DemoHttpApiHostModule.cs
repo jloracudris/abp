@@ -69,11 +69,7 @@ public class DemoHttpApiHostModule : AbpModule
     {
         var configuration = context.Services.GetConfiguration();
         var hostingEnvironment = context.Services.GetHostingEnvironment();
-
-        context.Services.AddDbContextFactory<DemoDbContext>(options =>
-            options.UsePostgreSql(configuration["ConnectionStrings:Default"]),
-            ServiceLifetime.Scoped);
-
+        
         ConfigureAuthentication(context);
         ConfigureBundles();
         ConfigureUrls(configuration);
@@ -84,6 +80,13 @@ public class DemoHttpApiHostModule : AbpModule
         ConfigureSwaggerServices(context, configuration);
         context.Services.AddApiVersioning();
         ConfigureElsa(context, configuration);
+
+        context.Services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.WriteIndented = true;
+                options.JsonSerializerOptions.Converters.Add(new CustomJsonConverterForType());
+            });
         //Razor
         context.Services.AddRazorPages();
     }
