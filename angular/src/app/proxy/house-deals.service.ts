@@ -38,10 +38,10 @@ export class HouseDealsService {
 
   constructor(private restService: RestService) {}
 
-  GetSchemaActivity = (apiVersion: string = "1.0") =>
+  GetSchemaActivity = (url: string, method: string) =>
     this.restService.request<any, any>({
-      method: 'GET',
-      url: `/start-home-review/start`,
+      method,
+      url
     },
       { apiName: this.apiName });
 

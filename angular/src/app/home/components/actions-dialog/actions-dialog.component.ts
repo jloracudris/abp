@@ -25,12 +25,13 @@ export class ActionsDialogComponent implements OnInit {
   constructor(
     private fb: FormBuilder, 
     public readonly list: ListService,
-    @Inject(MAT_DIALOG_DATA) public data: HouseDealDto,
+    @Inject(MAT_DIALOG_DATA) public data: any,
     private houseDealService: HouseDealsService) { }
 
   ngOnInit(): void {
     this.form = this.fb.group({});
-    this.houseDealService.GetSchemaActivity().subscribe({
+    console.log(this.data.method)
+    this.houseDealService.GetSchemaActivity(this.data.url, this.data.method).subscribe({
       next: listFormDefinition => {
         const arrayofForms = [];
         const keys = Object.keys(listFormDefinition.properties)

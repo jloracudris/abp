@@ -105,7 +105,7 @@
                     <i class="fa fa-chevron-down mr-1"></i>
                   </button>
                   <mat-menu #menu="matMenu">
-                    <button *ngFor="let field of element.actions" mat-menu-item (click)="triggerAction()">{{ field.displayName }}</button>
+                    <button *ngFor="let field of element.actions" mat-menu-item (click)="triggerAction(field.inputProperties.data.Path, field.inputProperties.data.Methods)">{{ field.displayName }}</button>
                   </mat-menu>
                 </td>
               </ng-container>

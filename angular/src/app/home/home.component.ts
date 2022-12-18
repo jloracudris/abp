@@ -72,13 +72,17 @@ export class HomeComponent {
     });
   }
 
-  triggerAction() {
+  triggerAction(url: string, method: string) {
     this.dialog.open( ActionsDialogComponent, {
       maxWidth: '100vw',
       maxHeight: '100vh',
       height: '100%',
       width: '100%',
-      panelClass: 'full-screen-modal'
+      panelClass: 'full-screen-modal',
+      data: {
+        url,
+        method: JSON.parse(method)[0]
+      }
     });
   }
 
