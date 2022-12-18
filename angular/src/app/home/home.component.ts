@@ -17,9 +17,9 @@ import { ActionsDialogComponent } from './components/actions-dialog/actions-dial
   providers: [ListService]
 })
 export class HomeComponent {
-  deals = { items: [], totalCount: 0 } as PagedResultDto<HouseDealDto>;
+  deals: any = [];
   columns: string[] = ["Customer", "Phone", "Email", "DealerShip", "Lot", "HName", "BSize", "WZone", "Attachments", "HStatus", "LotStatus", "Actions"];
-
+  actions: any[]
   get hasLoggedIn(): boolean {
     return this.oAuthService.hasValidAccessToken();
   }
@@ -35,9 +35,22 @@ export class HomeComponent {
 
   ngOnInit() {
     const dealstreamCreator = () => this.houseDealService.getList();
-
+    const rs = []
     this.list.hookToQuery(dealstreamCreator).subscribe((response) => {
-      this.deals = response;
+      response.items.forEach((el) => {
+        this.houseDealService.GetByWorkflowInstanceId(el.instanceId).subscribe(rs => {
+          this.houseDealService.GetByWorkflowregistrationId(rs.definitionId).subscribe(def => {
+            const activityIds = rs.scheduledActivities.map(el => el.activityId);
+
+            this.actions = activityIds.map((actionId) => {
+              return def.activities.find(t => t.id === actionId)
+            })
+            el.actions = this.actions;
+            this.deals = response;
+            console.log(this.deals)
+          })
+        });
+      })
     });
   }
 
@@ -60,7 +73,7 @@ export class HomeComponent {
   }
 
   triggerAction() {
-    this.dialog.open(ActionsDialogComponent, {
+    this.dialog.open( ActionsDialogComponent, {
       maxWidth: '100vw',
       maxHeight: '100vh',
       height: '100%',

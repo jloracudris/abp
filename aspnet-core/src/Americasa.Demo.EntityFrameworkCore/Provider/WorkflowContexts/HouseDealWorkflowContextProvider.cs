@@ -73,7 +73,16 @@ namespace Americasa.Demo.Provider.WorkflowContexts
 
                 // Add blog post to DB.
                 // await dbSet.AddAsync(houseDeal, cancellationToken);
-                await _houseDealsRepository.InsertAsync(houseDeal, true, cancellationToken);
+                try
+                {
+                    await _houseDealsRepository.InsertAsync(houseDeal, true, cancellationToken);
+                }
+                catch (Exception e)
+                {
+
+                    var test = e;
+                }
+                
             }
             else
             {

@@ -67,6 +67,15 @@ namespace Americasa.Demo
 
         public async Task<PagedResultDto<HouseDealDto>> GetListAsync()
         {
+            try
+            {
+                var deals2 = await _houseDealsRepository.GetListAsync();
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
             var deals = await _houseDealsRepository.GetListAsync();
             //Get the total count with another query
             var totalCount = await _houseDealsRepository.GetCountAsync();
@@ -88,6 +97,7 @@ namespace Americasa.Demo
                     PhoneNumber = deal.PhoneNumber,
                     UpdateTime = DateTime.Now,
                     WindZone = deal.WindZone,
+                    InstanceId = deal.InstanceId
                 }).ToList();
 
             return new PagedResultDto<HouseDealDto>(
