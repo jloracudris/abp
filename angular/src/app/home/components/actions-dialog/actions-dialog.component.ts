@@ -44,7 +44,6 @@ export class ActionsDialogComponent implements OnInit {
 
   buildForm() {
     for (let field of this.listSchema) {
-      console.log(field);
       this.form.addControl(field.title, new FormControl());
     }
   }

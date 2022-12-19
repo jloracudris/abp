@@ -47,7 +47,6 @@ export class HomeComponent {
             })
             el.actions = this.actions;
             this.deals = response;
-            console.log(this.deals)
           })
         });
       })
@@ -72,9 +71,8 @@ export class HomeComponent {
     });
   }
 
-  triggerAction(formSchema: string) {
-    console.log(formSchema);
-    this.dialog.open( ActionsDialogComponent, {
+  triggerAction(formSchema: string, inputProperties: any, instanceId: string) {
+    const actionsDialogRef = this.dialog.open( ActionsDialogComponent, {
       maxWidth: '100vw',
       maxHeight: '100vh',
       height: '100%',
@@ -82,6 +80,14 @@ export class HomeComponent {
       panelClass: 'full-screen-modal',
       data: {
         formSchema: JSON.parse(formSchema)
+      }
+    });    
+   actionsDialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        console.log(result)
+        this.houseDealService.SaveDynamicForm(inputProperties.data.Signal, instanceId, result).subscribe(() => {
+          this.list.get();
+        });
       }
     });
   }
