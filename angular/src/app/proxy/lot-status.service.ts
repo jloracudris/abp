@@ -10,27 +10,29 @@ export class LotStatusService {
   apiName = 'Default';
   
 
-  create = (text: string) =>
+  create = (text: string, apiVersion: string = "1.0") =>
     this.restService.request<any, LotStatusDto>({
       method: 'POST',
       url: '/api/app/lot-status',
-      params: { text },
+      params: { text, ["api-version"]: apiVersion },
     },
     { apiName: this.apiName });
   
 
-  delete = (id: string) =>
+  delete = (id: string, apiVersion: string = "1.0") =>
     this.restService.request<any, void>({
       method: 'DELETE',
       url: `/api/app/lot-status/${id}`,
+      params: { ["api-version"]: apiVersion },
     },
     { apiName: this.apiName });
   
 
-  getList = () =>
+  getList = (apiVersion: string = "1.0") =>
     this.restService.request<any, PagedResultDto<LotStatusDto>>({
       method: 'GET',
       url: '/api/app/lot-status',
+      params: { ["api-version"]: apiVersion },
     },
     { apiName: this.apiName });
 

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Americasa.Demo.Migrations
 {
-    public partial class Initial : Migration
+    public partial class AllTables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -274,6 +274,92 @@ namespace Americasa.Demo.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AbpUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AppDealerShips",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    DealerShipId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppDealerShips", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AppHouseDeals",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    InstanceId = table.Column<string>(type: "text", nullable: false),
+                    DealId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    LotNumber = table.Column<string>(type: "text", nullable: false),
+                    HouseName = table.Column<string>(type: "text", nullable: false),
+                    BoxSize = table.Column<string>(type: "text", nullable: false),
+                    WindZone = table.Column<string>(type: "text", nullable: false),
+                    Attachment = table.Column<string>(type: "text", nullable: false),
+                    HomeStatusId = table.Column<Guid>(type: "uuid", nullable: false),
+                    LotStatusId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    IsPublished = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppHouseDeals", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AppHouses",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    HomeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    HomeStatusId = table.Column<int>(type: "integer", nullable: false),
+                    CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppHouses", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AppHouseStatuses",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppHouseStatuses", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AppLotStatuses",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    LotStatusId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppLotStatuses", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -901,6 +987,21 @@ namespace Americasa.Demo.Migrations
 
             migrationBuilder.DropTable(
                 name: "AbpUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "AppDealerShips");
+
+            migrationBuilder.DropTable(
+                name: "AppHouseDeals");
+
+            migrationBuilder.DropTable(
+                name: "AppHouses");
+
+            migrationBuilder.DropTable(
+                name: "AppHouseStatuses");
+
+            migrationBuilder.DropTable(
+                name: "AppLotStatuses");
 
             migrationBuilder.DropTable(
                 name: "OpenIddictScopes");

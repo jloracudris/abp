@@ -35,6 +35,7 @@ using Elsa.Persistence.EntityFramework.PostgreSql;
 using Elsa;
 using Autofac.Core;
 using Microsoft.EntityFrameworkCore.Internal;
+using Americasa.Demo.Provider.WorkflowContexts;
 
 namespace Americasa.Demo;
 
@@ -68,7 +69,7 @@ public class DemoHttpApiHostModule : AbpModule
     {
         var configuration = context.Services.GetConfiguration();
         var hostingEnvironment = context.Services.GetHostingEnvironment();
-
+        
         ConfigureAuthentication(context);
         ConfigureBundles();
         ConfigureUrls(configuration);
@@ -79,6 +80,13 @@ public class DemoHttpApiHostModule : AbpModule
         ConfigureSwaggerServices(context, configuration);
         context.Services.AddApiVersioning();
         ConfigureElsa(context, configuration);
+
+        context.Services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.WriteIndented = true;
+                options.JsonSerializerOptions.Converters.Add(new CustomJsonConverterForType());
+            });
         //Razor
         context.Services.AddRazorPages();
     }
@@ -228,7 +236,7 @@ public class DemoHttpApiHostModule : AbpModule
                 .AddJavaScriptActivities()
                 .AddWorkflowsFrom<Startup>();
         });
-
+        context.Services.AddWorkflowContextProvider<HouseDealWorkflowContextProvider>();
         context.Services.AddElsaApiEndpoints();
         context.Services.Configure<ApiVersioningOptions>(options =>
         {

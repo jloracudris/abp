@@ -1,5 +1,6 @@
 
 export interface HouseDealDto {
+  instanceId?: string;
   dealId?: string;
   name?: string;
   phoneNumber?: string;
@@ -13,6 +14,8 @@ export interface HouseDealDto {
   lotStatusId?: string;
   creationTime?: string;
   updateTime?: string;
+  isPublished: boolean;
+  actions: any[]
 }
 
 export interface HouseDto {

@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Elsa.Activities.Http" Version="2.9.2" />
     <ProjectReference Include="..\Americasa.Demo.Domain\Americasa.Demo.Domain.csproj" />
     <ProjectReference Include="..\Americasa.Demo.Entities\Americasa.Demo.Entities.csproj" />
     <PackageReference Include="Volo.Abp.EntityFrameworkCore.PostgreSql" Version="6.0.1" />
