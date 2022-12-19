@@ -20,6 +20,7 @@ import { DealerShipService, HouseDealsService, HouseService, HouseStatusService,
 })
 export class ActionsDialogComponent implements OnInit {
   form: FormGroup
+  title: String
   listSchema: any[];
 
   constructor(
@@ -30,22 +31,20 @@ export class ActionsDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.fb.group({});
-    console.log(this.data.method)
-    this.houseDealService.GetSchemaActivity(this.data.url, this.data.method).subscribe({
-      next: listFormDefinition => {
-        const arrayofForms = [];
-        const keys = Object.keys(listFormDefinition.properties)
+    
+    const arrayofForms = [];
+        const keys = Object.keys(this.data.formSchema.properties)
         keys.forEach((key) => {
-          arrayofForms.push(listFormDefinition.properties[key])
+          arrayofForms.push(this.data.formSchema.properties[key])
         });
         this.listSchema = arrayofForms;
+        this.title = this.data.formSchema.title;
         this.buildForm();
-      },
-    });
   }
 
   buildForm() {
     for (let field of this.listSchema) {
+      console.log(field);
       this.form.addControl(field.title, new FormControl());
     }
   }

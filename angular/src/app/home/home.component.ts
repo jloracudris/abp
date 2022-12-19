@@ -40,7 +40,7 @@ export class HomeComponent {
       response.items.forEach((el) => {
         this.houseDealService.GetByWorkflowInstanceId(el.instanceId).subscribe(rs => {
           this.houseDealService.GetByWorkflowregistrationId(rs.definitionId).subscribe(def => {
-            const activityIds = rs.scheduledActivities.map(el => el.activityId);
+            const activityIds = rs.blockingActivities.map(el => el.activityId);
 
             this.actions = activityIds.map((actionId) => {
               return def.activities.find(t => t.id === actionId)
@@ -72,7 +72,8 @@ export class HomeComponent {
     });
   }
 
-  triggerAction(url: string, method: string) {
+  triggerAction(formSchema: string) {
+    console.log(formSchema);
     this.dialog.open( ActionsDialogComponent, {
       maxWidth: '100vw',
       maxHeight: '100vh',
@@ -80,8 +81,7 @@ export class HomeComponent {
       width: '100%',
       panelClass: 'full-screen-modal',
       data: {
-        url,
-        method: JSON.parse(method)[0]
+        formSchema: JSON.parse(formSchema)
       }
     });
   }
