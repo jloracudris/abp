@@ -62,7 +62,7 @@ namespace Americasa.Demo.Provider.WorkflowContexts
                 houseDeal = ((HttpRequestModel)context.WorkflowExecutionContext.Input!).GetBody<HouseDeal>();
 
                 // Generate a new ID.
-                houseDeal.InstanceId = Guid.NewGuid().ToString("N");
+                houseDeal.InstanceId = context.WorkflowExecutionContext.WorkflowInstance.Id;
 
                 // Set IsPublished to false to prevent caller from cheating ;)
                 houseDeal.IsPublished = false;
