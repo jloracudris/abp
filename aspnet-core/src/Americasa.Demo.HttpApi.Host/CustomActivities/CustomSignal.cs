@@ -27,6 +27,29 @@ namespace Americasa.Demo.CustomActivities
         //[ActivityOutput(Hint = "The input that was received with the signal.")]
         //public object? SignalInput { get; set; }
 
+        /// <summary>
+        /// Allow authenticated requests only
+        /// </summary>
+        [ActivityInput(
+            Hint = "Check to allow authenticated requests only",
+            SupportedSyntaxes = new[] { SyntaxNames.Literal, SyntaxNames.JavaScript, SyntaxNames.Liquid },
+            Category = "Security"
+        )]
+        public bool Authorize { get; set; }
+
+        /// <summary>
+        /// Provide a policy to challenge the user with. If the policy fails, the request is forbidden.
+        /// </summary>
+        [ActivityInput(
+            Hint = "Provide a policy to evaluate. If the policy fails, the request is forbidden.",
+            SupportedSyntaxes = new[] { SyntaxNames.Literal, SyntaxNames.JavaScript, SyntaxNames.Liquid },
+            Category = "Security"
+        )]
+        public string? Policy { get; set; }
+
+
+
+
         private readonly TextWriter _writer;
 
        // [ActivityOutput] public object? Output { get; set; }
