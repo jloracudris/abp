@@ -18,6 +18,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatNativeDateModule } from '@angular/material/core';
 
+
 @NgModule({
   declarations: [ ],
   imports: [
@@ -38,7 +39,7 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatSelectModule,
     MatIconModule,
     MatMenuModule,
-    MatStepperModule
+    MatStepperModule,
   ],
   exports: [
     CoreModule,
