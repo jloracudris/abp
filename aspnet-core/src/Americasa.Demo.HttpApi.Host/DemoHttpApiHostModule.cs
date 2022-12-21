@@ -36,6 +36,9 @@ using Elsa;
 using Autofac.Core;
 using Microsoft.EntityFrameworkCore.Internal;
 using Americasa.Demo.Provider.WorkflowContexts;
+using Americasa.Demo.CustomActivities;
+using Americasa.Demo.CustomActivities.Provider;
+using Americasa.Demo.CustomActivities.Signaler;
 
 namespace Americasa.Demo;
 
@@ -231,6 +234,7 @@ public class DemoHttpApiHostModule : AbpModule
                         configuration.GetConnectionString("Default")))
                 .AddConsoleActivities()
                 .AddHttpActivities(elsaSection.GetSection("Server").Bind)
+                .AddActivity<CustomSignal>()                
                 .AddEmailActivities(elsaSection.GetSection("Smtp").Bind)
                 .AddQuartzTemporalActivities()
                 .AddJavaScriptActivities()
@@ -238,6 +242,8 @@ public class DemoHttpApiHostModule : AbpModule
         });
         context.Services.AddWorkflowContextProvider<HouseDealWorkflowContextProvider>();
         context.Services.AddElsaApiEndpoints();
+        context.Services.AddBookmarkProvider<SignalCustomBookmarkProvider>();
+        context.Services.AddTransient<ICustomSignaler, CustomSignaler>();
         context.Services.Configure<ApiVersioningOptions>(options =>
         {
             options.UseApiBehavior = false;
