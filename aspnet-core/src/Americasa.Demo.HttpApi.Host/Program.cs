@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Americasa.Demo.CustomActivities.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -36,6 +37,7 @@ public class Program
                 .UseSerilog();
             await builder.AddApplicationAsync<DemoHttpApiHostModule>();
             var app = builder.Build();
+            app.UseMiddleware<CustomActivityMiddleware>();
             await app.InitializeApplicationAsync();
             await app.RunAsync();
             return 0;

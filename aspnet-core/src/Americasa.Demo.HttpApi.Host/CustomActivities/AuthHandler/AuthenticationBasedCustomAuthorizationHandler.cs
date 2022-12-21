@@ -1,7 +1,10 @@
 ﻿using Americasa.Demo.CustomActivities.Models;
 using Elsa.Activities.Http.Contracts;
 using Elsa.Activities.Http.Models;
+using Elsa.Services.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Americasa.Demo.CustomActivities.AuthHandler
