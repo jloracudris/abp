@@ -3,10 +3,12 @@ using Elsa.Activities.Signaling.Models;
 using Elsa.ActivityResults;
 using Elsa.Attributes;
 using Elsa.Expressions;
+using Elsa.Metadata;
 using Elsa.Services;
 using Elsa.Services.Models;
 using System;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Americasa.Demo.CustomActivities
@@ -16,7 +18,7 @@ namespace Americasa.Demo.CustomActivities
         Description = "Suspend workflow execution until the specified signal is received.",
         Outcomes = new[] { OutcomeNames.Done }
     )]
-    public class CustomSignal : Activity
+    public class CustomSignal : Activity, IActivityPropertyOptionsProvider
     {
         [ActivityInput(Hint = "The name of the signal to wait for.", SupportedSyntaxes = new[] { SyntaxNames.JavaScript, SyntaxNames.Liquid },DefaultValue ="Rules", IsReadOnly =true)]
         public string Signal { get; set; } = "Rules";
@@ -89,6 +91,11 @@ namespace Americasa.Demo.CustomActivities
             // context.LogOutputProperty(this, nameof(Output), Output);
             _writer.WriteLine("Hello World!");
             return Done();
+        }
+
+        public object GetOptions(PropertyInfo property)
+        {
+            throw new NotImplementedException();
         }
 
 

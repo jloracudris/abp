@@ -39,6 +39,8 @@ using Americasa.Demo.Provider.WorkflowContexts;
 using Americasa.Demo.CustomActivities;
 using Americasa.Demo.CustomActivities.Provider;
 using Americasa.Demo.CustomActivities.Signaler;
+using Americasa.Demo.CustomActivities.AuthHandler;
+using Americasa.Demo.CustomActivities.Middleware;
 
 namespace Americasa.Demo;
 
@@ -244,6 +246,8 @@ public class DemoHttpApiHostModule : AbpModule
         context.Services.AddElsaApiEndpoints();
         context.Services.AddBookmarkProvider<SignalCustomBookmarkProvider>();
         context.Services.AddTransient<ICustomSignaler, CustomSignaler>();
+        
+        context.Services.AddTransient<ICustomAuthorizationHandler, AuthenticationBasedCustomAuthorizationHandler>();
         context.Services.Configure<ApiVersioningOptions>(options =>
         {
             options.UseApiBehavior = false;
@@ -317,6 +321,7 @@ public class DemoHttpApiHostModule : AbpModule
         app.UseConfiguredEndpoints();
 
         //other middlewares
+        app.UseMiddleware<CustomActivityMiddleware>();
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
