@@ -88,7 +88,8 @@ namespace Americasa.Demo
                     PhoneNumber = deal.PhoneNumber,
                     UpdateTime = DateTime.Now,
                     WindZone = deal.WindZone,
-                    InstanceId = deal.InstanceId
+                    InstanceId = deal.InstanceId,
+                    IsPublished = deal.IsPublished
                 }).ToList();
 
             return new PagedResultDto<HouseDealDto>(
