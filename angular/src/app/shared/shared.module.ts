@@ -17,6 +17,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatNativeDateModule } from '@angular/material/core';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 
 @NgModule({
@@ -40,6 +41,7 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatIconModule,
     MatMenuModule,
     MatStepperModule,
+    MatSlideToggleModule
   ],
   exports: [
     CoreModule,
@@ -58,7 +60,8 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatSelectModule,
     MatIconModule,
     MatMenuModule,
-    MatStepperModule
+    MatStepperModule,
+    MatSlideToggleModule
   ],
 })
 export class SharedModule {}

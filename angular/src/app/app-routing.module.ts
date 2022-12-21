@@ -8,9 +8,14 @@ const routes: Routes = [
     loadChildren: () => import('./home/home.module').then(m => m.HomeModule),
   },
   {
-    path: 'dealership',
+    path: 'deals',
     pathMatch: 'full',
     loadChildren: () => import('./dealership/dealership.module').then(m => m.DealerShipModule),
+  },
+  {
+    path: 'add-deals',
+    pathMatch: 'full',
+    loadChildren: () => import('./addDealerShip/add-deal.module').then(m => m.AddDealerShipModule),
   },
   {
     path: 'account',
