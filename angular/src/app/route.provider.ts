@@ -22,6 +22,13 @@ function configureRoutes(routesService: RoutesService) {
         order: 2,
         layout: eLayoutType.application,
       },
+      {
+        path: '/add-deals',
+        name: 'Add Deals',
+        iconClass: 'fas fa-address-card',
+        order: 2,
+        layout: eLayoutType.application,
+      },
     ]);
   };
 }

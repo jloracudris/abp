@@ -3,19 +3,19 @@ import { ThemeBasicTestingModule } from "@abp/ng.theme.basic/testing";
 import { ThemeSharedTestingModule } from "@abp/ng.theme.shared/testing";
 import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { NgxValidateCoreModule } from "@ngx-validate/core";
-import { HomeComponent } from "./dealsership.component";
+import { DealerShipComponent } from "./dealership.component";
 import { OAuthService } from 'angular-oauth2-oidc';
 import { AuthService } from '@abp/ng.core';
 
 
-describe("DealserShipComponent", () => {
-  let fixture: ComponentFixture<HomeComponent>;
+describe("DealerShipComponent", () => {
+  let fixture: ComponentFixture<DealerShipComponent>;
   const mockOAuthService = jasmine.createSpyObj('OAuthService', ['hasValidAccessToken'])
   const mockAuthService = jasmine.createSpyObj('AuthService', ['navigateToLogin'])
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [HomeComponent],
+        declarations: [DealerShipComponent],
         imports: [
           CoreTestingModule.withConfig(),
           ThemeSharedTestingModule.withConfig(),
@@ -38,7 +38,7 @@ describe("DealserShipComponent", () => {
   );
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HomeComponent);
+    fixture = TestBed.createComponent(DealerShipComponent);
     fixture.detectChanges();
   });
 
