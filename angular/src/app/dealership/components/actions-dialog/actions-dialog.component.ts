@@ -42,8 +42,7 @@ export class ActionsDialogComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     public readonly list: ListService,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private houseDealService: HouseDealsService
+    @Inject(MAT_DIALOG_DATA) public data: any,    
   ) {}
 
   ngOnInit(): void {
@@ -64,19 +63,19 @@ export class ActionsDialogComponent implements OnInit {
   }
 
   buildForm() {
-    
     for (let field of this.listSchema) {
       if (field.type === 'houseSpec') {
         this.displayedColumns = field.cols;
       }
       this.form.addControl(field.title, new FormControl());
+      if (field.default) {
+        this.form.get(field.title).setValue(field.default);
+      }
     }
   }
 
   getLatAndLng($event: any) {
-    this.latLong = `${$event.lat}, ${$event.lng}`;
-    this.lat = $event.lat;
-    this.lng = $event.lng;
+    this.form.get("maps").setValue(`${$event.lat}, ${$event.lng}`);
   }
 
   save() {
@@ -99,12 +98,6 @@ export class ActionsDialogComponent implements OnInit {
   }
 
   getFormValue() {
-    return {
-      ...this.form.value,
-      maps: {
-        lat: this.lat,
-        lng: this.lng
-      }
-    }
+    return this.form.value
   }
 }

@@ -5,13 +5,14 @@
       <label for="schema-{{ field.title }}">{{ field.title }}</label
       ><span> * </span>
       <div [ngSwitch]="field.type">
-        <input
-          *ngSwitchCase="'string'"
-          type="text"
-          id="schema-{{ field.title }}"
-          class="form-control"
-          [formControlName]="field.title"
-        />
+        <mat-form-field *ngSwitchCase="'string'" class="w-100">
+          <input
+            matInput
+            type="text"
+            id="schema-{{ field.title }}"
+            [formControlName]="field.title"
+          />
+        </mat-form-field>
 
         <input
           *ngSwitchCase="'textarea'"
@@ -23,7 +24,7 @@
 
         <mat-form-field appearance="fill" *ngSwitchCase="'dropdown'" class="w-100">
           <mat-label>{{ field.label }}</mat-label>
-          <mat-select id="schema-{{ field.title }}" [formControlName]="field.title" >
+          <mat-select id="schema-{{ field.title }}" [formControlName]="field.title">
             <mat-option mdInput *ngFor="let opt of field.options" [value]="opt.value">
               {{ opt.label }}
             </mat-option>
