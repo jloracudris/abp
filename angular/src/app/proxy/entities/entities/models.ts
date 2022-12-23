@@ -27,12 +27,14 @@ export interface HouseDto {
 }
 
 export interface HouseStatusDto {
+  id?: string;
   name?: string;
   creationTime?: string;
   updateTime?: string;
 }
 
 export interface LotStatusDto {
+  id?: string;
   name?: string;
   lotStatusId?: string;
   creationTime?: string;

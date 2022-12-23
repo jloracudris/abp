@@ -38,6 +38,10 @@ export class DealerShipComponent {
     'Actions',
   ];
   actions: any[];
+  actionSuccess: boolean = false;
+  actionPerformed: boolean = false;
+  message: string = null;
+
   get hasLoggedIn(): boolean {
     return this.oAuthService.hasValidAccessToken();
   }
@@ -84,16 +88,18 @@ export class DealerShipComponent {
       if (result) {
         const { customerName, attachment, boxSize, email, houseName, lot, phone, windZone } =
           result;
-        this.houseDealService
+        /* this.houseDealService
           .create(customerName, attachment, boxSize, email, houseName, lot, phone, windZone)
           .subscribe(() => {
             this.list.get();
-          });
+          }); */
       }
     });
   }
 
   triggerAction(formSchema: string, inputProperties: any, instanceId: string) {
+    this.actionSuccess = false;
+    this.actionPerformed = false;
     if (!formSchema) {
       this.confirmDialog(inputProperties, instanceId);
     } else {
@@ -112,6 +118,9 @@ export class DealerShipComponent {
           this.houseDealService
             .SaveDynamicForm(inputProperties.data.Signal, instanceId, result)
             .subscribe(() => {
+              this.actionSuccess = true;
+              this.actionPerformed = true;
+              this.message = 'Action saved succesfully';
               this.list.get();
             });
         }
@@ -134,6 +143,9 @@ export class DealerShipComponent {
         this.houseDealService
           .SaveDynamicForm(inputProperties.data.Signal, instanceId)
           .subscribe(() => {
+            this.actionSuccess = true;
+            this.actionPerformed = true;
+            this.message = 'Action saved succesfully';
             this.list.get();
           });
       }

@@ -1,8 +1,9 @@
 <div class="container">
   <div class="card">
-    <div class="card-body">
-      <div class="row">
+    <div class="card-body">      
+      <div class="row">        
         <mat-card>
+          <form-validation-messages *ngIf="actionSuccess && actionPerformed" messageType="success" [message]="message"></form-validation-messages>
           <mat-card-header class="w-100">
             <mat-card-title-group class="w-100">
               <mat-card-title class="abp-card-title">Deals</mat-card-title>              

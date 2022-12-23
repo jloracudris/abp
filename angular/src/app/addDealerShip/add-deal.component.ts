@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { DealerShipDto } from '@proxy/dto';
 import {
   HouseDealDto,
@@ -30,6 +30,7 @@ export class AddDealComponent implements OnInit {
   house = { items: [], totalCount: 0 } as PagedResultDto<HouseDto>;
   lotStatus = { items: [], totalCount: 0 } as PagedResultDto<LotStatusDto>;
   houseStatus = { items: [], totalCount: 0 } as PagedResultDto<HouseStatusDto>;
+  sucessSavingForm: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -43,6 +44,7 @@ export class AddDealComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    
     const dealstreamCreator = () => this.dealerShipService.getList();
 
     this.list.hookToQuery(dealstreamCreator).subscribe(response => {
@@ -86,14 +88,17 @@ export class AddDealComponent implements OnInit {
     });
   }
 
-  getFormValue() {
-    const { customerName, attachment, boxSize, email, houseName, lot, phone, windZone } =
+  getFormValue(formDirective: FormGroupDirective) {
+    const { customerName, attachment, boxSize, email, houseName, lot, phone, windZone, dealerShip, houseStatus, lotStatus } =
       this.form.value;
     this.houseDealService
-      .create(customerName, attachment, boxSize, email, houseName, lot, phone, windZone)
+      .create(customerName, attachment, boxSize, email, houseName, lot, phone, windZone, dealerShip, houseStatus, lotStatus)
       .subscribe(() => {
-        this.router.navigate(['/deals'])
+        this.sucessSavingForm = true;
+        setTimeout(() => {        
+          this.form.reset();
+          formDirective.resetForm();
+        }, 5000);
       });
-    return this.form.value;
   }
 }

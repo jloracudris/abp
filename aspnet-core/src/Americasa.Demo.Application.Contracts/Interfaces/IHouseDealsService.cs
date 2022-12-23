@@ -12,7 +12,7 @@ namespace Americasa.Demo.Interfaces
     public interface IHouseDealService : IApplicationService
     {
         Task<PagedResultDto<HouseDealDto>> GetListAsync();
-        Task<HouseDealDto> CreateAsync(string name, string attachment, string boxsize, string email, string houseName, string lotNumber, string phone, string windZone);
+        Task<HouseDealDto> CreateAsync(string name, string attachment, string boxsize, string email, string houseName, string lotNumber, string phone, string windZone, Guid dealerShip, Guid houseStatus, Guid lotStatus);
         Task DeleteAsync(Guid id);
     }
 }

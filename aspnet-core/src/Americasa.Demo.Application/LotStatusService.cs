@@ -46,6 +46,7 @@ namespace Americasa.Demo
             var rs = items
                 .Select(item => new LotStatusDto
                 {
+                    Id = item.Id,
                     Name = item.Name,
                     LotStatusId = item.LotStatusId,
                 }).ToList();

@@ -7,6 +7,7 @@ import { ActionsDialogComponent } from './components/actions-dialog/actions-dial
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component.spec';
 import { MapsComponent } from './components/map/map.component';
 import { AgmCoreModule } from '@agm/core';
+import { FormValidationMessagesModule } from '../shared/form-validation-messages/form-validation-messages.module';
 
 @NgModule({
   declarations: [
@@ -14,11 +15,12 @@ import { AgmCoreModule } from '@agm/core';
     DealDialogComponent,
     ActionsDialogComponent,
     ConfirmDialogComponent,
-    MapsComponent,
+    MapsComponent
   ],
   imports: [
     SharedModule,
     DealerShipRoutingModule,
+    FormValidationMessagesModule,
     AgmCoreModule.forRoot({
       apiKey: '',
     }),

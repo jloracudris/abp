@@ -24,7 +24,7 @@ namespace Americasa.Demo
         }
 
         [Authorize("Americasa_Deals_Create")]
-        public async Task<HouseDealDto> CreateAsync(string name, string attachment, string boxsize, string email, string houseName, string lotNumber, string phone, string windZone)
+        public async Task<HouseDealDto> CreateAsync(string name, string attachment, string boxsize, string email, string houseName, string lotNumber, string phone, string windZone, Guid dealerShip, Guid houseStatus, Guid lotStatus)
         {
             var deal = await _houseDealsRepository.InsertAsync(
                 new HouseDeal
@@ -33,12 +33,12 @@ namespace Americasa.Demo
                     Attachment = attachment,
                     BoxSize = boxsize,
                     CreationTime = DateTime.Now,
-                    DealId = Guid.NewGuid(),
+                    DealId = dealerShip,
                     Email = email,
-                    HomeStatusId = Guid.NewGuid(),
+                    HomeStatusId = houseStatus,
                     HouseName = houseName,
                     LotNumber = lotNumber,
-                    LotStatusId = Guid.NewGuid(),
+                    LotStatusId = lotStatus,
                     PhoneNumber = phone,
                     WindZone = windZone,
                     UpdateTime = DateTime.Now,

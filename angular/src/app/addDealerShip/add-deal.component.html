@@ -1,72 +1,82 @@
-<h2 mat-dialog-title>New Deal</h2>
-<form [formGroup]="form" class="form-container">
-  <mat-form-field class="w-100">
-    <mat-label>{{ '::Name' | abpLocalization }} <span> * </span></mat-label>
+<form [formGroup]="form" #ngForm="ngForm" class="form-container">
+  <form-validation-messages
+    *ngIf="ngForm.submitted && form.status === 'INVALID'"
+    messageType="error"
+    message="Fill all required fields"
+  ></form-validation-messages>
+  <form-validation-messages
+    *ngIf="ngForm.submitted && form.status !== 'INVALID' && sucessSavingForm"
+    messageType="success"
+    message="Deal created succesfully!"
+  ></form-validation-messages>
+  <h2 mat-dialog-title>New Deal</h2>
+  <mat-form-field class="w-100" appearance="fill">
+    <mat-label>{{ '::Name' | abpLocalization }}</mat-label>
     <input type="text" id="deal-customerName" matInput formControlName="customerName" />
   </mat-form-field>
 
-  <mat-form-field class="w-100">
-    <mat-label>Phone Number <span> * </span></mat-label>
+  <mat-form-field class="w-100" appearance="fill">
+    <mat-label>Phone Number</mat-label>
     <input type="number" id="deal-phone" matInput formControlName="phone" />
   </mat-form-field>
 
-  <mat-form-field class="w-100">
-    <mat-label>Email <span> * </span></mat-label>
+  <mat-form-field class="w-100" appearance="fill">
+    <mat-label>Email </mat-label>
     <input type="text" id="deal-email" matInput formControlName="email" />
   </mat-form-field>
 
-  <mat-form-field class="w-100">
+  <mat-form-field class="w-100" appearance="fill">
     <mat-label>dealerShip</mat-label>
-    <mat-select id="book-dealerShip" formControlName="dealerShip">
+    <mat-select id="deal-dealerShip" formControlName="dealerShip">
       <mat-option [value]="dls.dealerShipId" *ngFor="let dls of dealership?.items">{{
         dls.name
       }}</mat-option>
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field class="w-100">
+  <mat-form-field class="w-100" appearance="fill">
     <mat-label>Lot</mat-label>
     <input type="text" id="deal-lot" matInput formControlName="lot" />
   </mat-form-field>
 
-  <mat-form-field class="w-100">
-    <mat-label>House Name <span> * </span></mat-label>
+  <mat-form-field class="w-100" appearance="fill">
+    <mat-label>House Name </mat-label>
     <input type="text" id="deal-house" matInput formControlName="houseName" />
   </mat-form-field>
 
-  <mat-form-field class="w-100">
+  <mat-form-field class="w-100" appearance="fill">
     <mat-label>Box Size</mat-label>
     <input type="text" id="deal-boxSize" matInput formControlName="boxSize" />
   </mat-form-field>
 
-  <mat-form-field class="w-100">
+  <mat-form-field class="w-100" appearance="fill">
     <mat-label>Wind Zone</mat-label>
     <input type="text" id="deal-windZone" matInput formControlName="windZone" />
   </mat-form-field>
 
-  <mat-form-field class="w-100">
+  <mat-form-field class="w-100" appearance="fill">
     <mat-label>Attachment</mat-label>
     <input type="text" id="deal-attachment" matInput formControlName="attachment" />
   </mat-form-field>
 
-  <mat-form-field class="w-100">
+  <mat-form-field class="w-100" appearance="fill">
     <mat-label>House Status</mat-label>
-    <mat-select id="book-houseStatus" formControlName="houseStatus">
-      <mat-option [value]="houseStatus.name" *ngFor="let houseStatus of houseStatus.items">{{
+    <mat-select id="deal-houseStatus" formControlName="houseStatus">
+      <mat-option [value]="houseStatus.id" *ngFor="let houseStatus of houseStatus.items">{{
         houseStatus.name
       }}</mat-option>
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field class="w-100">
+  <mat-form-field class="w-100" appearance="fill">
     <mat-label>Lot Status</mat-label>
-    <mat-select id="book-lotStatus" formControlName="lotStatus">
-      <mat-option [value]="lotStatus.name" *ngFor="let lotStatus of lotStatus.items">{{
+    <mat-select id="deal-lotStatus" formControlName="lotStatus">
+      <mat-option [value]="lotStatus.id" *ngFor="let lotStatus of lotStatus.items">{{
         lotStatus.name
       }}</mat-option>
     </mat-select>
   </mat-form-field>
+  <button mat-raised-button color="primary" (click)="getFormValue(ngForm)" [disabled]="form.pristine">
+    {{ '::Save' | abpLocalization }}
+  </button>
 </form>
-<button mat-raised-button color="primary" (click)="getFormValue()">
-  {{ '::Save' | abpLocalization }}
-</button>

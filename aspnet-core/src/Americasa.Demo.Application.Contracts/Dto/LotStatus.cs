@@ -9,6 +9,7 @@ namespace Americasa.Demo.Entities.Entities
 {
     public class LotStatusDto
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public Guid LotStatusId { get; set; }
         public DateTime CreationTime { get; set; }

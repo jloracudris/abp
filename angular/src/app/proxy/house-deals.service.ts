@@ -10,11 +10,11 @@ export class HouseDealsService {
   apiName = 'Default';
 
 
-  create = (name: string, attachment: string, boxsize: string, email: string, houseName: string, lotNumber: string, phoneNumber: string, windZone: string, apiVersion: string = "1.0") =>
+  create = (name: string, attachment: string, boxsize: string, email: string, houseName: string, lotNumber: string, phoneNumber: string, windZone: string, dealerShip, houseStatus, lotStatus, apiVersion: string = "1.0") =>
     this.restService.request<any, HouseDealDto>({
       method: 'POST',
       url: '/v2/house-deals',
-      body: { name, attachment, boxsize, email, houseName, lotNumber, phoneNumber, windZone, ["api-version"]: apiVersion },
+      body: { name, attachment, boxsize, email, houseName, lotNumber, phoneNumber, windZone, dealerShip, houseStatus, lotStatus, ["api-version"]: apiVersion },
     },
       { apiName: this.apiName });
 
