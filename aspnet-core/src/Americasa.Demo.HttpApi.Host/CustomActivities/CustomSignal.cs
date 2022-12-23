@@ -2,13 +2,24 @@
 using Elsa.Activities.Signaling.Models;
 using Elsa.ActivityResults;
 using Elsa.Attributes;
+using Elsa.Design;
 using Elsa.Expressions;
 using Elsa.Metadata;
+using Elsa.Serialization.Converters;
 using Elsa.Services;
 using Elsa.Services.Models;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
+using NodaTime;
+using NodaTime.Serialization.JsonNet;
+using RulesEngine.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Americasa.Demo.CustomActivities
@@ -20,14 +31,24 @@ namespace Americasa.Demo.CustomActivities
     )]
     public class CustomSignal : Activity
     {
-        [ActivityInput(Hint = "The name of the signal to wait for.", SupportedSyntaxes = new[] { SyntaxNames.JavaScript, SyntaxNames.Liquid },DefaultValue ="Rules", IsReadOnly =true)]
+        [ActivityInput(Hint = "The name of the signal to wait for.", 
+            SupportedSyntaxes = new[] { SyntaxNames.JavaScript, 
+                SyntaxNames.Liquid },DefaultValue ="Rules", 
+        IsReadOnly =true)]
         public string Signal { get; set; } = "Rules";
 
-        [ActivityInput(Hint = "form json.", SupportedSyntaxes = new[] { SyntaxNames.JavaScript, SyntaxNames.Liquid })]
-        public string JsonSchema { get; set; } = default!;
+        [ActivityInput(Hint = "form json.",
+           UIHint = ActivityInputUIHints.MultiLine,
+            Category = "Form Rules"
+            )]
+        public string WorkFlowRules { get; set; } = default!;
 
-        //[ActivityOutput(Hint = "The input that was received with the signal.")]
-        //public object? SignalInput { get; set; }
+
+        [ActivityInput(Hint = "Input object.",
+            UIHint = ActivityInputUIHints.MultiLine,
+            Category = "Input"
+        )]
+        public string Input { get; set; } = default!;
 
         /// <summary>
         /// Allow authenticated requests only
@@ -51,30 +72,13 @@ namespace Americasa.Demo.CustomActivities
 
 
 
-
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly TextWriter _writer;
 
-       // [ActivityOutput] public object? Output { get; set; }
-
-        //protected override bool OnCanExecute(ActivityExecutionContext context)
-        //{
-        //    if (context.Input is Signal triggeredSignal)
-        //        return string.Equals(triggeredSignal.SignalName, Signal, StringComparison.OrdinalIgnoreCase);
-
-        //    return true;
-        //}
-
-        //protected override async ValueTask<bool> OnCanExecuteAsync(ActivityExecutionContext context)
-        //{
-        //    //if (context.Input is Signal triggeredSignal)
-        //    //    return string.Equals(triggeredSignal.SignalName, Signal, StringComparison.OrdinalIgnoreCase);
-
-        //    return true;
-        //}
-
-        public CustomSignal(TextWriter writer)
+        public CustomSignal(TextWriter writer, IHttpContextAccessor httpContextAccessor)
         {
             _writer = writer;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         protected override IActivityExecutionResult OnExecute(ActivityExecutionContext context) {
@@ -83,27 +87,67 @@ namespace Americasa.Demo.CustomActivities
             //return Done();
         }
 
-        protected override IActivityExecutionResult OnResume(ActivityExecutionContext context)
+        protected async override ValueTask<IActivityExecutionResult> OnResumeAsync(ActivityExecutionContext context)
         {
-            //var triggeredSignal = context.GetInput<Object>()!;
-            //SignalInput = triggeredSignal.Input;
-            //Output = triggeredSignal.Input;
-            // context.LogOutputProperty(this, nameof(Output), Output);
-            _writer.WriteLine("Hello World!");
+            var schemaRules = new List<Workflow>();
+            schemaRules.Add(GetWorkFlowRules());
+            var rulesEngine = new RulesEngine.RulesEngine(schemaRules.ToArray());
+
+            List<RuleResultTree> response = await rulesEngine.ExecuteAllRulesAsync(schemaRules[0].WorkflowName, GetInputObject());
+            await WriteContentAsync(response, context.CancellationToken);
             return Done();
         }
 
+        public Workflow GetWorkFlowRules()
+        {
+            var jsonWOrkflowRules = JObject.Parse(WorkFlowRules);
+            var schemaWorkflow = jsonWOrkflowRules.ToObject<Workflow>();
+            return schemaWorkflow;
+        }
 
-        //protected override async ValueTask<IActivityExecutionResult> OnResumeAsync(ActivityExecutionContext context)
-        //{
-        //    //var triggeredSignal = context.GetInput<Signal>()!;
-        //    //SignalInput = triggeredSignal.Input;
-        //    //Output = triggeredSignal.Input;
-        //    //context.LogOutputProperty(this, nameof(Output), Output);
-        //    await _writer.WriteLineAsync("Hello World!");
-        //    return Done();
-        //}
+        public Object GetInputObject()
+        {
+            var jInput = JObject.Parse(Input);
+            return jInput.ToObject<Object>();
+        }
+
+        private async Task WriteContentAsync(List<RuleResultTree> contentResult, CancellationToken cancellationToken)
+        {
+            var httpContext = _httpContextAccessor.HttpContext ?? new DefaultHttpContext();
+            var response = httpContext.Response;
 
 
+            if (contentResult == null)
+                return;
+
+
+            var serializerSetting = CreateSerializerSettings();
+            var json = JsonConvert.SerializeObject(new {RulesResponse = contentResult }, serializerSetting);
+            await response.WriteAsync(json, cancellationToken);
+        }
+
+        private JsonSerializerSettings CreateSerializerSettings()
+        {
+            var settings = new JsonSerializerSettings()
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                ReferenceLoopHandling = ReferenceLoopHandling.Serialize
+            };
+
+            settings.ContractResolver = new CamelCasePropertyNamesContractResolver
+            {
+                NamingStrategy = new CamelCaseNamingStrategy
+                {
+                    ProcessDictionaryKeys = false,
+                    ProcessExtensionDataNames = true,
+                    OverrideSpecifiedNames = false
+                }
+            };
+
+            settings.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+            settings.Converters.Add(new FlagEnumConverter(new DefaultNamingStrategy()));
+            settings.Converters.Add(new TypeJsonConverter());
+            return settings;
+        }
     }
 }

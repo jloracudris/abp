@@ -12,6 +12,7 @@
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'Americasa.Demo.HttpApi.Host' " />
   <ItemGroup>
     <PackageReference Include="Elsa.Activities.Webhooks" Version="2.9.2" />
+    <PackageReference Include="RulesEngine" Version="4.0.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
     <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
     <PackageReference Include="Volo.Abp.AspNetCore.MultiTenancy" Version="6.0.1" />
