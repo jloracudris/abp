@@ -1,6 +1,7 @@
 ﻿using Americasa.Demo.Dto;
 using Americasa.Demo.Entities.Entities;
 using Americasa.Demo.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ using Volo.Abp.Domain.Repositories;
 
 namespace Americasa.Demo
 {
+    [Authorize]
     public class HouseDealsService : ApplicationService, IHouseDealService
     {
         private readonly IRepository<HouseDeal, Guid> _houseDealsRepository;
@@ -21,7 +23,8 @@ namespace Americasa.Demo
             _houseDealsRepository = houseDealsRepository;
         }
 
-        public async Task<HouseDealDto> CreateAsync(string name, string attachment, string boxsize, string email, string houseName, string lotNumber, string phone, string windZone)
+        [Authorize("Americasa_Deals_Create")]
+        public async Task<HouseDealDto> CreateAsync(string name, string attachment, string boxsize, string email, string houseName, string lotNumber, string phone, string windZone, Guid dealerShip, Guid houseStatus, Guid lotStatus)
         {
             var deal = await _houseDealsRepository.InsertAsync(
                 new HouseDeal
@@ -30,12 +33,12 @@ namespace Americasa.Demo
                     Attachment = attachment,
                     BoxSize = boxsize,
                     CreationTime = DateTime.Now,
-                    DealId = Guid.NewGuid(),
+                    DealId = dealerShip,
                     Email = email,
-                    HomeStatusId = Guid.NewGuid(),
+                    HomeStatusId = houseStatus,
                     HouseName = houseName,
                     LotNumber = lotNumber,
-                    LotStatusId = Guid.NewGuid(),
+                    LotStatusId = lotStatus,
                     PhoneNumber = phone,
                     WindZone = windZone,
                     UpdateTime = DateTime.Now,
@@ -65,6 +68,7 @@ namespace Americasa.Demo
             await _houseDealsRepository.DeleteAsync(id);
         }
 
+        [Authorize("Americasa_Deals_View")]
         public async Task<PagedResultDto<HouseDealDto>> GetListAsync()
         {   
             var deals = await _houseDealsRepository.GetListAsync();

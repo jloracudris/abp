@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DealerShipDto } from '@proxy/dto';
 import {
@@ -38,18 +38,20 @@ export class ActionsDialogComponent implements OnInit {
   latLong: string = null;
   lat: number;
   lng: number;
+  required: any
 
   constructor(
     private fb: FormBuilder,
     public readonly list: ListService,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private houseDealService: HouseDealsService
+    private dialogRef: MatDialogRef<ActionsDialogComponent>
   ) {}
 
   ngOnInit(): void {
     this.form = this.fb.group({});
 
     const arrayofForms = [];
+    this.required = this.data.formSchema.required;
     const keys = Object.keys(this.data.formSchema.properties);
     keys.forEach(key => {
       arrayofForms.push(this.data.formSchema.properties[key]);
@@ -64,47 +66,33 @@ export class ActionsDialogComponent implements OnInit {
   }
 
   buildForm() {
-    
     for (let field of this.listSchema) {
       if (field.type === 'houseSpec') {
         this.displayedColumns = field.cols;
       }
-      this.form.addControl(field.title, new FormControl());
+      let formControl = new FormControl();
+      if (this.required) {
+        const isRequired = this.required.some((t): any => t === field.id)
+        field.isRequired = isRequired;
+        if(isRequired) {
+          formControl = new FormControl('', Validators.required);
+        }
+      }
+      this.form.addControl(field.id, formControl);
+      if (field.default) {
+        this.form.get(field.id).setValue(field.default);
+      }
     }
   }
 
   getLatAndLng($event: any) {
-    this.latLong = `${$event.lat}, ${$event.lng}`;
-    this.lat = $event.lat;
-    this.lng = $event.lng;
+    this.form.get("maps").setValue(`${$event.lat}, ${$event.lng}`);
   }
-
-  save() {
+  
+  getFormValue() {
     if (this.form.invalid) {
       return;
     }
-    console.log(this.form.value);
-    /* this.approvalService.create(this.form.value).subscribe(response => {
-      this.sendActivity(response).subscribe({
-        next: (response: any) => {
-          this.isModalOpen = false;
-          this.form.reset();
-          this.list.get();
-        },
-        error: error => {
-          console.log(error);
-        },
-      });
-    }); */
-  }
-
-  getFormValue() {
-    return {
-      ...this.form.value,
-      maps: {
-        lat: this.lat,
-        lng: this.lng
-      }
-    }
+    this.dialogRef.close(this.form.value);
   }
 }

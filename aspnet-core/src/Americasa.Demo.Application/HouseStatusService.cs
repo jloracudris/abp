@@ -46,6 +46,7 @@ namespace Americasa.Demo
             var rs = items
                 .Select(item => new HouseStatusDto
                 {
+                    Id = item.Id,
                     Name = item.Name,
                 }).ToList();
 

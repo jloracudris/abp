@@ -39,6 +39,11 @@ using Americasa.Demo.Provider.WorkflowContexts;
 using Americasa.Demo.CustomActivities;
 using Americasa.Demo.CustomActivities.Provider;
 using Americasa.Demo.CustomActivities.Signaler;
+using Americasa.Demo.CustomActivities.AuthHandler;
+using Americasa.Demo.CustomActivities.Middleware;
+using Americasa.Demo.CustomActivities.Query;
+using Americasa.Demo.CustomActivities.Stores;
+using Elsa.Models;
 
 namespace Americasa.Demo;
 
@@ -240,10 +245,16 @@ public class DemoHttpApiHostModule : AbpModule
                 .AddJavaScriptActivities()
                 .AddWorkflowsFrom<Startup>();
         });
+
+        context.Services.AddScoped<ICustomAuthorizationHandler, AuthenticationBasedCustomAuthorizationHandler>();
         context.Services.AddWorkflowContextProvider<HouseDealWorkflowContextProvider>();
         context.Services.AddElsaApiEndpoints();
         context.Services.AddBookmarkProvider<SignalCustomBookmarkProvider>();
         context.Services.AddTransient<ICustomSignaler, CustomSignaler>();
+        context.Services.AddTransient<ITestWorkflowLaunchpad, TestWorkflowLaunchpad>();
+        context.Services.AddTransient<ITestTriggerFinder, TestTriggerFinder>();
+        context.Services.AddTransient<ITestTriggerStore, TestEntityFrameworkTriggerStore>();
+        
         context.Services.Configure<ApiVersioningOptions>(options =>
         {
             options.UseApiBehavior = false;
@@ -274,6 +285,8 @@ public class DemoHttpApiHostModule : AbpModule
         var app = context.GetApplicationBuilder();
         var env = context.GetEnvironment();
 
+        //app.UseMiddleware<ExampleMiddleware>();
+        
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
@@ -292,7 +305,7 @@ public class DemoHttpApiHostModule : AbpModule
         app.UseCors();
         app.UseAuthentication();
         app.UseAbpOpenIddictValidation();
-
+        
         if (MultiTenancyConsts.IsEnabled)
         {
             app.UseMultiTenancy();
@@ -310,13 +323,13 @@ public class DemoHttpApiHostModule : AbpModule
             c.OAuthClientId(configuration["AuthServer:SwaggerClientId"]);
             c.OAuthScopes("Demo");
         });
-
         app.UseAuditing();
         app.UseAbpSerilogEnrichers();
         app.UseHttpActivities();
         app.UseConfiguredEndpoints();
 
         //other middlewares
+        
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();

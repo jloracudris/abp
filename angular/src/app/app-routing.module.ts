@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { PermissionGuard } from '@abp/ng.core';
 
 const routes: Routes = [
   {
@@ -10,12 +11,20 @@ const routes: Routes = [
   {
     path: 'deals',
     pathMatch: 'full',
+    canActivate: [PermissionGuard],
+    data: {
+      requiredPolicy: 'Americasa_Deals_View',
+    },
     loadChildren: () => import('./dealership/dealership.module').then(m => m.DealerShipModule),
   },
   {
     path: 'add-deals',
+    canActivate: [PermissionGuard],
     pathMatch: 'full',
     loadChildren: () => import('./addDealerShip/add-deal.module').then(m => m.AddDealerShipModule),
+    data: {
+      requiredPolicy: 'Americasa_Deals_Create',
+    },
   },
   {
     path: 'account',

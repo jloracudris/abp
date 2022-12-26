@@ -9,6 +9,7 @@ namespace Americasa.Demo.Entities.Entities
 {
     public class HouseStatusDto
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public DateTime CreationTime { get; set; }
         public DateTime UpdateTime { get; set; }

@@ -1,29 +1,30 @@
 <h2 mat-dialog-title>{{ title }}</h2>
 <mat-dialog-content>
-  <form [formGroup]="form" (ngSubmit)="save()">
+  <form [formGroup]="form" #ngForm="ngForm">
+    <form-validation-messages
+      *ngIf="ngForm.submitted && form.status === 'INVALID'"
+      messageType="error"
+      message="Fill all required fields"
+    ></form-validation-messages>
     <div class="form-group" *ngFor="let field of listSchema">
-      <label for="schema-{{ field.title }}">{{ field.title }}</label
-      ><span> * </span>
+      <label for="schema-{{ field.id }}">{{ field.title }}</label
+      ><span *ngIf="field.isRequired"> * </span>
       <div [ngSwitch]="field.type">
-        <input
-          *ngSwitchCase="'string'"
-          type="text"
-          id="schema-{{ field.title }}"
-          class="form-control"
-          [formControlName]="field.title"
-        />
+        <mat-form-field *ngSwitchCase="'string'" class="w-100">
+          <input matInput type="text" id="schema-{{ field.id }}" [formControlName]="field.id" />
+        </mat-form-field>
 
         <input
           *ngSwitchCase="'textarea'"
           type="textarea"
-          id="schema-{{ field.title }}"
+          id="schema-{{ field.id }}"
           class="form-control"
-          [formControlName]="field.title"
+          [formControlName]="field.id"
         />
 
         <mat-form-field appearance="fill" *ngSwitchCase="'dropdown'" class="w-100">
           <mat-label>{{ field.label }}</mat-label>
-          <mat-select id="schema-{{ field.title }}" [formControlName]="field.title" >
+          <mat-select id="schema-{{ field.id }}" [formControlName]="field.id" [(value)]="field.default">
             <mat-option mdInput *ngFor="let opt of field.options" [value]="opt.value">
               {{ opt.label }}
             </mat-option>
@@ -32,9 +33,9 @@
 
         <input
           *ngSwitchCase="'file'"
-          id="schema-{{ field.title }}"
+          id="schema-{{ field.id }}"
           class="form-control"
-          [formControlName]="field.title"
+          [formControlName]="field.id"
           class="form-control"
           type="file"
           (change)="onChange($event)"
@@ -61,22 +62,20 @@
         <div *ngSwitchCase="'maps'">
           <form-map (getLatAndLong)="getLatAndLng($event)"></form-map>
 
-          <label for="schema-{{ field.title }}">Latitude/Longitude</label>
+          <label for="schema-{{ field.id }}">Latitude/Longitude</label>
           <input
             type="text"
-            id="schema-{{ field.title }}"
+            id="schema-{{ field.id }}"
             class="form-control"
-            [formControlName]="field.title"
+            [formControlName]="field.id"
             [value]="latLong"
           />
         </div>
       </div>
     </div>
+    <button mat-button mat-dialog-close>{{ '::Close' | abpLocalization }}</button>
+    <button mat-raised-button color="primary" (click)="getFormValue()">
+      {{ '::Save' | abpLocalization }}
+    </button>
   </form>
 </mat-dialog-content>
-<mat-dialog-actions>
-  <button mat-button mat-dialog-close>{{ '::Close' | abpLocalization }}</button>
-  <button mat-raised-button color="primary" [mat-dialog-close]="getFormValue()">
-    {{ '::Save' | abpLocalization }}
-  </button>
-</mat-dialog-actions>
