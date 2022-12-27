@@ -81,10 +81,11 @@
                   </button>
                   <mat-menu #menu="matMenu">
                     <button
+                      [appDisableAction]="field.inputProperties.data.Policy"
                       *ngFor="let field of element.actions"
                       mat-menu-item
                       (click)="
-                        triggerAction(field.description, field.inputProperties, element.instanceId)
+                        triggerAction(field.inputProperties, element.instanceId)
                       "
                     >
                       {{ field.displayName }}

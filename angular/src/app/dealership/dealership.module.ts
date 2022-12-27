@@ -8,6 +8,7 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
 import { MapsComponent } from './components/map/map.component';
 import { AgmCoreModule } from '@agm/core';
 import { FormValidationMessagesModule } from '../shared/form-validation-messages/form-validation-messages.module';
+import { DisableActionDirective } from '../shared/directives/disable-action.directive';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { FormValidationMessagesModule } from '../shared/form-validation-messages
     DealDialogComponent,
     ActionsDialogComponent,
     ConfirmDialogComponent,
+    DisableActionDirective,
     MapsComponent
   ],
   imports: [

@@ -97,7 +97,8 @@ export class DealerShipComponent {
     });
   }
 
-  triggerAction(formSchema: string, inputProperties: any, instanceId: string) {
+  triggerAction(inputProperties: any, instanceId: string) {
+    const formSchema = inputProperties.data.Input;   
     this.actionSuccess = false;
     this.actionPerformed = false;
     if (!formSchema) {

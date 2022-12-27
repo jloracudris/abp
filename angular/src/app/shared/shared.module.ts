@@ -20,8 +20,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 
-@NgModule({
-  declarations: [ ],
+@NgModule({  
   imports: [
     CoreModule,
     ThemeSharedModule,
