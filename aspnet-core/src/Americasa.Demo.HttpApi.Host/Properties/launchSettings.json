@@ -26,7 +26,7 @@
     "Americasa.Demo": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:44336;http://localhost:4813",
+      "applicationUrl": "https://localhost:28344;http://localhost:20483",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

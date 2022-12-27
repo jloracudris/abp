@@ -17,6 +17,7 @@ public class HouseDealsPermissionDefinitionProvider : PermissionDefinitionProvid
         myGroup.AddPermission("Americasa_Deals_SelectLot");
         myGroup.AddPermission("Americasa_Deals_RejectHome");
         myGroup.AddPermission("Americasa_Deals_ApproveHome");
+        myGroup.AddPermission("Americasa_Deals_GetSignature");
     }
 
     private static LocalizableString L(string name)
