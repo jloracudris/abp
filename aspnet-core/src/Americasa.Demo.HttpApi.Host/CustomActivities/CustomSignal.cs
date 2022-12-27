@@ -26,6 +26,7 @@ namespace Americasa.Demo.CustomActivities
 {
     [Trigger(
         Category = "Workflows",
+        DisplayName = "User Decision Signal",
         Description = "Suspend workflow execution until the specified signal is received.",
         Outcomes = new[] { OutcomeNames.Done }
     )]
