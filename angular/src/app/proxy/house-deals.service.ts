@@ -62,7 +62,7 @@ export class HouseDealsService {
   SaveDynamicForm = (signal: string, workflowInstanceId: string, formValues: any = null) =>
     this.restService.request<any, any>({
       method: 'POST',
-      url: `/v1/signals/${signal}/execute`,
+      url: `/custom-signals/${signal}/execute`,
       body: { workflowInstanceId, ...formValues }
     },
       { apiName: this.apiName });

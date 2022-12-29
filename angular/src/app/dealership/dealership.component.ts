@@ -98,7 +98,8 @@ export class DealerShipComponent {
   }
 
   triggerAction(inputProperties: any, instanceId: string) {
-    const formSchema = inputProperties.data.Input;   
+    console.log('triggerAction')
+    const formSchema = inputProperties.data.Input;
     this.actionSuccess = false;
     this.actionPerformed = false;
     if (!formSchema) {
@@ -115,7 +116,10 @@ export class DealerShipComponent {
         },
       });
       actionsDialogRef.afterClosed().subscribe(result => {
+        console.log(result)
+        console.log(inputProperties)
         if (result) {
+          console.log(inputProperties)
           this.houseDealService
             .SaveDynamicForm(inputProperties.data.Signal, instanceId, result)
             .subscribe(() => {
@@ -141,6 +145,7 @@ export class DealerShipComponent {
 
     dialogRef.afterClosed().subscribe(dialogResult => {
       if (dialogResult) {
+        console.log(inputProperties)
         this.houseDealService
           .SaveDynamicForm(inputProperties.data.Signal, instanceId)
           .subscribe(() => {

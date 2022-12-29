@@ -1,4 +1,5 @@
-﻿using Elsa;
+﻿using Americasa.Demo.Errors.Activity;
+using Elsa;
 using Elsa.Activities.Signaling.Models;
 using Elsa.ActivityResults;
 using Elsa.Attributes;
@@ -34,8 +35,7 @@ namespace Americasa.Demo.CustomActivities
     {
         [ActivityInput(Hint = "The name of the signal to wait for.", 
             SupportedSyntaxes = new[] { SyntaxNames.JavaScript, 
-                SyntaxNames.Liquid },DefaultValue ="Rules", 
-        IsReadOnly =true)]
+                SyntaxNames.Liquid },DefaultValue ="Rules")]
         public string Signal { get; set; } = "Rules";
 
         [ActivityInput(Hint = "form json.",
@@ -91,19 +91,58 @@ namespace Americasa.Demo.CustomActivities
         protected async override ValueTask<IActivityExecutionResult> OnResumeAsync(ActivityExecutionContext context)
         {
             var schemaRules = new List<Workflow>();
-            schemaRules.Add(GetWorkFlowRules());
-            var rulesEngine = new RulesEngine.RulesEngine(schemaRules.ToArray());
+            var rulesFound = GetWorkFlowRules();
+            List<RuleResultTree> rulesProcessed;
+            if (rulesFound != null)
+            {
+                schemaRules.Add(rulesFound);
+                var rulesEngine = new RulesEngine.RulesEngine(schemaRules.ToArray());
+                rulesProcessed = await rulesEngine.ExecuteAllRulesAsync(schemaRules[0].WorkflowName, GetInputObject());
+            }
+            else
+            {
+                rulesProcessed = new List<RuleResultTree>();
+            }
 
-            List<RuleResultTree> response = await rulesEngine.ExecuteAllRulesAsync(schemaRules[0].WorkflowName, GetInputObject());
-            await WriteContentAsync(response, context.CancellationToken);
+            await ManageRules(rulesProcessed, context);
+
             return Done();
+        }
+
+
+        private async Task ManageRules(List<RuleResultTree> rulesProcessed, ActivityExecutionContext context)
+        {
+            List<RuleResultTree> rulesNotSuccess = rulesProcessed.FindAll(rule => !rule.IsSuccess);
+            List<ActivityError> activityErrors = new List<ActivityError>();
+            if (rulesNotSuccess.Count > 0)
+            {
+                foreach (var rule in rulesNotSuccess)
+                {
+                    var activityError = new ActivityError()
+                    {
+                        Expression = rule.Rule.Expression,
+                        Message = rule.ExceptionMessage,
+                        Name = rule.Rule.RuleName,
+                        Type = "Rule"
+                    };
+
+                    activityErrors.Add(activityError);
+                }
+            }
+
+            await WriteContentAsync(activityErrors, context.CancellationToken);
         }
 
         public Workflow GetWorkFlowRules()
         {
-            var jsonWOrkflowRules = JObject.Parse(WorkFlowRules);
-            var schemaWorkflow = jsonWOrkflowRules.ToObject<Workflow>();
-            return schemaWorkflow;
+            if (!string.IsNullOrEmpty(WorkFlowRules))
+            {
+                var jsonWOrkflowRules = JObject.Parse(WorkFlowRules);
+                var schemaWorkflow = jsonWOrkflowRules.ToObject<Workflow>();
+                return schemaWorkflow;
+            }
+            
+            return null;
         }
 
         public Object GetInputObject()
@@ -112,7 +151,7 @@ namespace Americasa.Demo.CustomActivities
             return jInput.ToObject<Object>();
         }
 
-        private async Task WriteContentAsync(List<RuleResultTree> contentResult, CancellationToken cancellationToken)
+        private async Task WriteContentAsync(List<ActivityError> contentResult, CancellationToken cancellationToken)
         {
             var httpContext = _httpContextAccessor.HttpContext ?? new DefaultHttpContext();
             var response = httpContext.Response;
@@ -123,7 +162,7 @@ namespace Americasa.Demo.CustomActivities
 
 
             var serializerSetting = CreateSerializerSettings();
-            var json = JsonConvert.SerializeObject(new {RulesResponse = contentResult }, serializerSetting);
+            var json = JsonConvert.SerializeObject(new { Errors = contentResult }, serializerSetting);
             await response.WriteAsync(json, cancellationToken);
         }
 
