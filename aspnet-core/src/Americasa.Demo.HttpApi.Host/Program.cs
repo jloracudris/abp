@@ -37,7 +37,7 @@ public class Program
                 .UseSerilog();
             await builder.AddApplicationAsync<DemoHttpApiHostModule>();
             var app = builder.Build();
-            app.UseMiddleware<CustomActivityMiddleware>();
+            
             await app.InitializeApplicationAsync();
             await app.RunAsync();
             return 0;

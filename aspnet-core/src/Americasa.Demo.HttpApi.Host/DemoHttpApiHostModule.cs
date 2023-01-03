@@ -323,6 +323,7 @@ public class DemoHttpApiHostModule : AbpModule
             c.OAuthClientId(configuration["AuthServer:SwaggerClientId"]);
             c.OAuthScopes("Demo");
         });
+        app.UseMiddleware<CustomActivityMiddleware>();
         app.UseAuditing();
         app.UseAbpSerilogEnrichers();
         app.UseHttpActivities();

@@ -9,7 +9,7 @@ public class HouseDealsPermissionDefinitionProvider : PermissionDefinitionProvid
     public override void Define(IPermissionDefinitionContext context)
     {
         var myGroup = context.AddGroup("Americasa");
-        //Define your own permissions here. Example:
+        //Define your own permissions here.Example:
         myGroup.AddPermission("Americasa_Deals_Create");
         myGroup.AddPermission("Americasa_Deals_View");
         myGroup.AddPermission("Americasa_Deals_StartHomeReview");
