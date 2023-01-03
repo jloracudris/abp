@@ -34,10 +34,11 @@ namespace Americasa.Demo.CustomActivities.Middleware
 {
     public class CustomActivityMiddleware
     {
-        private readonly string pathCustomSignal = "/custom-signals/rules/execute";
+        private readonly string pathCustomSignal = "/custom-signals/";
         private readonly ICustomAuthorizationHandler _customAuthorizationHandler;
         private readonly IBookmarkFinder _bookmarkFinder;
         private readonly IAuthorizationService _authorizationService;
+        private string NameSignal;
         public CustomActivityMiddleware()
         {
         }
@@ -53,26 +54,27 @@ namespace Americasa.Demo.CustomActivities.Middleware
             IRouteMatcher routeMatcher,
             ITenantAccessor tenantAccessor,
             IEnumerable<IHttpRequestBodyParser> contentParsers,
-            ICustomAuthorizationHandler customAuthorizationHandler)
+            ICustomAuthorizationHandler customAuthorizationHandler
+            )
         {
             var basePath = httpContext.Request.Path.Value;
             var path = httpContext.Request.Path.Value;
 
-            if (path == null || path != pathCustomSignal)
+            if (path == null || !path.StartsWith(pathCustomSignal))
             {
                 await _next(httpContext);
                 return;
             }
 
             var request = httpContext.Request;
-
+            NameSignal = path.Split("/")[2];
             //var instanceId = await GetWorkFlowId(request);
-            
+
             //if (string.IsNullOrEmpty(instanceId)) {
             //    await _next(httpContext);
             //    return;
             //}
-               
+
             var cancellationToken = CancellationToken.None; // Prevent half-way request abortion (which also happens when WriteHttpResponse writes to the response).
             var method = httpContext.Request.Method!.ToLowerInvariant();
 
@@ -137,17 +139,35 @@ namespace Americasa.Demo.CustomActivities.Middleware
                 : await workflowRegistry.FindAsync(pendingWorkflowInstance.DefinitionId, VersionOptions.Published, tenantId, cancellationToken);
 
             var workflowBlueprintWrapper = await workflowBlueprintReflector.ReflectAsync(httpContext.RequestServices, workflowBlueprint, cancellationToken);
-            var activityWrapper = workflowBlueprintWrapper.GetUnfilteredActivity<CustomSignal>(pendingWorkflowInstance.LastExecutedActivityId!)!;
-            if (!await AuthorizeAsync(httpContext, customAuthorizationHandler, activityWrapper, workflowBlueprint, workflowInstanceId, cancellationToken))
+            //var activityWrapper = workflowBlueprintWrapper.GetUnfilteredActivity<CustomSignal>(pendingWorkflowInstance.LastExecutedActivityId!)!;
+
+            foreach (var activity in pendingWorkflowInstance.BlockingActivities)
             {
-                httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                return;
+                var activityWrapper = workflowBlueprintWrapper.GetUnfilteredActivity<CustomSignal>(activity.ActivityId!)!;
+                if(activityWrapper != null)
+                {
+                    var signal = await activityWrapper.EvaluatePropertyValueAsync(x => x.Signal, cancellationToken);
+                    if (signal == NameSignal)
+                    {
+                        if (!await AuthorizeAsync(httpContext, customAuthorizationHandler, activityWrapper, workflowBlueprint, workflowInstanceId, cancellationToken))
+                        {
+                            httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                            return;
+                        }
+                        else
+                        {
+                            await _next(httpContext);
+                            return;
+                        }
+                    }
+                }
+                
             }
-            else
-            {
-                await _next(httpContext);
-                return;
-            }
+
+            await _next(httpContext);
+            return;
+
+
 
         }
             private async Task<bool> AuthorizeAsync(
@@ -286,6 +306,16 @@ namespace Americasa.Demo.CustomActivities.Middleware
             return strRequestBody;
         }
 
+
+        //private static string GetActionId(AuthorizationFilterContext context)
+        //{
+        //    var controllerActionDescriptor = (ControllerActionDescriptor)context.ActionDescriptor;
+        //    var area = controllerActionDescriptor.ControllerTypeInfo.GetCustomAttribute<AreaAttribute>()?.RouteValue;
+        //    var controller = controllerActionDescriptor.ControllerName;
+        //    var action = controllerActionDescriptor.ActionName;
+
+        //    return $"{area}:{controller}:{action}";
+        //}
 
         //public async ValueTask<bool> AuthorizeAsync(HttpContext HttpContext, IActivityBlueprintWrapper<CustomSignal> CustomActivity, IWorkflowBlueprint WorkflowBlueprint, string WorkflowInstanceId, CancellationToken CancellationToken)
         //{
